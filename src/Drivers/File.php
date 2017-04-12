@@ -2,9 +2,9 @@
 
 namespace J0sh0nat0r\SimpleCache\Drivers;
 
-use J0sh0nat0r\SimpleCache\SimpleCacheDriver;
+use J0sh0nat0r\SimpleCache\Driver;
 
-class File extends SimpleCacheDriver
+class File extends Driver
 {
     private $items = [];
     private $dir;

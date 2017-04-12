@@ -11,7 +11,7 @@ namespace J0sh0nat0r\SimpleCache;
 class Cache
 {
     /**
-     * @var SimpleCacheDriver
+     * @var Driver
      */
     private $driver;
     /**

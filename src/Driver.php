@@ -2,7 +2,7 @@
 
 namespace J0sh0nat0r\SimpleCache;
 
-abstract class SimpleCacheDriver
+abstract class Driver
 {
     abstract public function set($key, $value, $time);
 

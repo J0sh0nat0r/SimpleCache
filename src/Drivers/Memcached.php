@@ -2,9 +2,9 @@
 
 namespace J0sh0nat0r\SimpleCache\Drivers;
 
-use J0sh0nat0r\SimpleCache\SimpleCacheDriver;
+use J0sh0nat0r\SimpleCache\Driver;
 
-class Memcached extends SimpleCacheDriver
+class Memcached extends Driver
 {
     private $pool;
 
