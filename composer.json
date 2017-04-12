@@ -1,0 +1,19 @@
+{
+  "name": "j0sh0nat0r/simple-cache",
+  "description": "Simple PHP cache class",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "J0sh0nat0r",
+      "email": "josh@megascripts.xyz"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "J0sh0nat0r\\SimpleCache\\": "src/"
+    }
+  }
+}
