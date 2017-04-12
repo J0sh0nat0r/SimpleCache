@@ -137,14 +137,27 @@ class Cache
     }
 
     /**
-     * Check is the cache contains an item
+     * Check if the cache contains an item
      * TODO: Native support in drivers?
      *
-     * @param $key
+     * @param string|array $key The key (or keys) to search for
      * @return bool
      */
     public function has($key)
     {
+        if (is_array($key)) {
+            $keys = $key;
+            $has = true;
+
+            foreach ($keys as $key) {
+                if (!$this->has($key)) {
+                    $has = false;
+                }
+            }
+
+            return $has;
+        }
+
         return $this->get($key) !== null;
     }
 
