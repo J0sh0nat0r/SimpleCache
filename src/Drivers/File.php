@@ -33,7 +33,7 @@ class File extends Driver
 
     public function set($key, $value, $time)
     {
-        $file_name = md5($value);
+        $file_name = md5($key);
 
         $this->items[$key] = [
             'expires_at' => $time ? time() + $time : 0,
