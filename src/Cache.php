@@ -33,10 +33,10 @@ class Cache
      * @return bool
      * @throws \Exception
      */
-    public function store($key, $value = null, $time = 0)
+    public function store($key, $value = null, $time = 3600)
     {
         if (is_array($key)) {
-            $time = $value ? $value : 0;
+            $time = is_null($value) ? $time : $value;
             $values = $key;
             $success = true;
 
@@ -75,7 +75,7 @@ class Cache
      */
     public function forever($key, $value = null)
     {
-        return $this->store($key, $value);
+        return $this->store($key, $value, 0);
     }
 
     /**
