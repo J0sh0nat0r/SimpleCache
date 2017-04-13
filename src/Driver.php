@@ -2,6 +2,12 @@
 
 namespace J0sh0nat0r\SimpleCache;
 
+/**
+ * The base driver class from which all drivers should inherit
+ *
+ * Class Driver
+ * @package J0sh0nat0r\SimpleCache
+ */
 abstract class Driver
 {
     /**
