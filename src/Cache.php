@@ -118,9 +118,9 @@ class Cache
      * Try to find a value in the cache and return it,
      * if we can't it will be calculated with the provided closure
      *
-     * @param $key
-     * @param $time
-     * @param $generate
+     * @param string $key
+     * @param int $time
+     * @param \Closure $generate
      * @return array|mixed|null
      */
     public function remember($key, $time, $generate)
@@ -158,13 +158,13 @@ class Cache
             return $has;
         }
 
-        return $this->get($key) !== null;
+        return !is_null($this->get($key));
     }
 
     /**
      * Fetch a value (or multiple values), remove it from the cache and then return it
      *
-     * @param $key
+     * @param string|array $key
      * @param null $default
      * @return array|mixed|null
      */
@@ -195,7 +195,7 @@ class Cache
     /**
      * Remove a value (or multiple values) from the cache
      *
-     * @param $key
+     * @param string|array $key
      * @return bool
      */
     public function remove($key)
@@ -223,7 +223,7 @@ class Cache
     /**
      * Clear the cache
      *
-     * @return mixed
+     * @return bool
      */
     public function clear()
     {
