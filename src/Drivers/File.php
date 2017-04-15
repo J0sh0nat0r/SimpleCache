@@ -67,13 +67,9 @@ class File extends Driver
 
     public function clear()
     {
-        foreach (scandir($this->dir) as $file) {
-            if ($file !== '.' && $file !== '..') {
-                unlink($this->dir . '/' . $file);
-            }
+        foreach ($this->items as $key => $item) {
+            $this->remove($key);
         }
-
-        $this->items = [];
 
         $this->sync();
     }
