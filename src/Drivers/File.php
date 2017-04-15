@@ -56,11 +56,13 @@ class File extends Driver
     public function remove($key)
     {
         if (isset($this->items[$key])) {
-            unlink($this->dir . '/' . $this->items[$key]['file_name']);
+            if (file_exists($this->dir . '/' . $this->items[$key]['file_name'])) {
+                unlink($this->dir . '/' . $this->items[$key]['file_name']);
+            }
             unset($this->items[$key]);
             return $this->sync();
         }
-        return true;
+        return false;
     }
 
     public function clear()
