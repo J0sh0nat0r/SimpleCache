@@ -121,9 +121,10 @@ class Cache
      * @param string $key
      * @param int $time
      * @param \Closure $generate
+     * @param mixed $default
      * @return array|mixed|null
      */
-    public function remember($key, $time, $generate)
+    public function remember($key, $time, $generate, $default = null)
     {
         $value = $this->get($key);
 
@@ -131,9 +132,13 @@ class Cache
             return $value;
         }
 
-        $this->store($key, $generate(), $time);
+        $value = $generate();
+        if (!is_null($value)) {
+            $this->store($key, $value, $time);
+            return $value;
+        }
 
-        return $this->get($key);
+        return $default;
     }
 
     /**
