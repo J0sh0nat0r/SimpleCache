@@ -24,7 +24,7 @@ class File extends Driver
         foreach (glob($this->dir . '/*', GLOB_ONLYDIR) as $item) {
             $data = json_decode(file_get_contents($item . '/data.json'), true);
 
-            if(time() >= $data['expiry']) {
+            if($data['expiry'] > 0 && time() >= $data['expiry']) {
                 $this->remove($data['key']);
             }
         }
