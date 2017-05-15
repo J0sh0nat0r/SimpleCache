@@ -6,7 +6,6 @@ use J0sh0nat0r\SimpleCache\Driver;
 
 class File extends Driver
 {
-    private $items = [];
     private $dir;
 
 
@@ -16,70 +15,74 @@ class File extends Driver
             throw new \Exception('No dir option passed for SimpleCache File driver');
         }
 
-        $this->dir = $options['dir'];
+        $this->dir = rtrim($options['dir'], '/');
 
-        if (!file_exists($this->dir . '/items.json')) {
-            $this->sync();
-        } else {
-            $this->items = json_decode(file_get_contents($this->dir . '/items.json'), true);
+        if(!is_dir($this->dir)) {
+            mkdir($this->dir);
         }
 
-        foreach ($this->items as $key => $item) {
-            if ($item['expires_at'] && $item['expires_at'] <= time()) {
-                $this->remove($key);
+        foreach (glob($this->dir . '/*', GLOB_ONLYDIR) as $item) {
+            $data = json_decode(file_get_contents($item . '/data.json'), true);
+
+            if(time() >= $data['expiry']) {
+                $this->remove($data['key']);
             }
         }
     }
 
     public function set($key, $value, $time)
     {
-        $file_name = md5($key);
+        try {
+            $dir = $this->dir . '/' . sha1($key);
 
-        $this->items[$key] = [
-            'expires_at' => $time ? time() + $time : 0,
-            'file_name' => $file_name
-        ];
+            if (!file_exists($dir)) {
+                mkdir($dir);
+            }
 
-        file_put_contents($this->dir . '/' . $file_name, $value);
+            file_put_contents($dir . '/data.json', json_encode(['expiry' => time() + $time, 'key' => $key]));
+            file_put_contents($dir . '/item.dat', $value);
+        } catch (\Exception $e) {
+            return false;
+        }
 
-        return $this->sync();
+        return true;
     }
 
     public function get($key)
     {
-        if (isset($this->items[$key])) {
-            return file_get_contents($this->dir . '/' . $this->items[$key]['file_name']);
+        $dir = $this->dir . '/' . sha1($key);
+
+        if(!is_dir($dir)) {
+            return null;
         }
-        return null;
+
+        return file_get_contents($dir . '/item.dat');
     }
 
     public function remove($key)
     {
-        if (isset($this->items[$key])) {
-            if (file_exists($this->dir . '/' . $this->items[$key]['file_name'])) {
-                unlink($this->dir . '/' . $this->items[$key]['file_name']);
+        try {
+            $dir = $this->dir . '/' . sha1($key);
+
+            if (!is_dir($dir)) {
+                return false;
             }
-            unset($this->items[$key]);
-            return $this->sync();
+
+            unlink($dir . '/data.json');
+            unlink($dir . '/item.dat');
+            rmdir($dir);
+        } catch (\Exception $e) {
+            return false;
         }
-        return false;
+
+        return true;
     }
 
     public function clear()
     {
-        foreach ($this->items as $key => $item) {
-            $this->remove($key);
+        foreach (glob($this->dir . '/*', GLOB_ONLYDIR) as $item) {
+            $data = json_decode($item . '/data.json', true);
+            $this->remove($data['key']);
         }
-
-        $this->sync();
-    }
-
-    private function sync()
-    {
-        if (file_put_contents($this->dir . '/items.json', json_encode($this->items))) {
-            $this->items = json_decode(file_get_contents($this->dir . '/items.json'), true);
-            return true;
-        }
-        return false;
     }
 }
