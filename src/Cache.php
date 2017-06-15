@@ -35,12 +35,16 @@ class Cache
 
     /**
      * Cache constructor.
-     * @param IDriver $driver
-     * @param null $driver_options
+     * @param $driver
+     * @param null|array $driver_options
      */
-    public function __construct(IDriver $driver, $driver_options = null)
+    public function __construct($driver, $driver_options = null)
     {
-        $this->driver = new $driver($driver_options);
+        if(!is_null($driver_options))
+            $this->driver = new $driver($driver_options);
+        else
+            $this->driver = new $driver();
+
         $this->items = new PCI($this);
     }
 
