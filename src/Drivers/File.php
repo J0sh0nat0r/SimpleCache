@@ -39,7 +39,9 @@ class File extends Driver
                 mkdir($dir);
             }
 
-            file_put_contents($dir . '/data.json', json_encode(['expiry' => time() + $time, 'key' => $key]));
+            $expiry = $time > 0 ? time() + $time : 0;
+
+            file_put_contents($dir . '/data.json', json_encode(['expiry' => $expiry, 'key' => $key]));
             file_put_contents($dir . '/item.dat', $value);
         } catch (\Exception $e) {
             return false;
@@ -81,7 +83,7 @@ class File extends Driver
     public function clear()
     {
         foreach (glob($this->dir . '/*', GLOB_ONLYDIR) as $item) {
-            $data = json_decode($item . '/data.json', true);
+            $data = json_decode(file_get_contents($item . '/data.json'), true);
             $this->remove($data['key']);
         }
     }
