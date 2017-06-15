@@ -2,9 +2,9 @@
 
 namespace J0sh0nat0r\SimpleCache\Drivers;
 
-use J0sh0nat0r\SimpleCache\Driver;
+use J0sh0nat0r\SimpleCache\IDriver;
 
-class APC extends Driver
+class APC implements IDriver
 {
     private $prefix;
 

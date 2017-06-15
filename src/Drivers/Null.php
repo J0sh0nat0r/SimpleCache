@@ -2,7 +2,7 @@
 
 namespace J0sh0nat0r\SimpleCache\Drivers;
 
-use J0sh0nat0r\SimpleCache\Driver;
+use J0sh0nat0r\SimpleCache\IDriver;
 
 /**
  * Null driver for unit testing
@@ -10,7 +10,7 @@ use J0sh0nat0r\SimpleCache\Driver;
  * Class Null
  * @package J0sh0nat0r\SimpleCache\Drivers
  */
-class Null extends Driver
+class Null implements IDriver
 {
     public function __construct($options)
     {

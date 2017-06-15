@@ -11,7 +11,7 @@ namespace J0sh0nat0r\SimpleCache;
 class Cache
 {
     /**
-     * @var Driver
+     * @var IDriver
      */
     private $driver;
     /**
@@ -19,7 +19,7 @@ class Cache
      */
     private $loaded = [];
 
-    public function __construct($driver, $driver_options = null)
+    public function __construct(IDriver $driver, $driver_options = null)
     {
         $this->driver = new $driver($driver_options);
     }

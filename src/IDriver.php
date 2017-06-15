@@ -3,12 +3,12 @@
 namespace J0sh0nat0r\SimpleCache;
 
 /**
- * The base driver class from which all drivers should inherit
+ * The interface which provides the template for drivers
  *
- * Class Driver
+ * Interface IDriver
  * @package J0sh0nat0r\SimpleCache
  */
-abstract class Driver
+interface IDriver
 {
     /**
      * Store a value in the cache
@@ -18,7 +18,7 @@ abstract class Driver
      * @param int $time
      * @return bool
      */
-    abstract public function set($key, $value, $time);
+    function set($key, $value, $time);
 
     /**
      * Get a value from the cache
@@ -26,7 +26,7 @@ abstract class Driver
      * @param string $key
      * @return mixed
      */
-    abstract public function get($key);
+    function get($key);
 
     /**
      * Remove a value from the cache
@@ -34,12 +34,12 @@ abstract class Driver
      * @param string $key
      * @return bool
      */
-    abstract public function remove($key);
+    function remove($key);
 
     /**
      * Clear the cache
      *
      * @return mixed
      */
-    abstract public function clear();
+    function clear();
 }
