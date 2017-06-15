@@ -2,6 +2,8 @@
 
 namespace J0sh0nat0r\SimpleCache;
 
+use J0sh0nat0r\SimpleCache\Internal\PCI;
+
 /**
  * The master cache class of SimpleCache
  *
@@ -11,6 +13,18 @@ namespace J0sh0nat0r\SimpleCache;
 class Cache
 {
     /**
+     *  Default storage time for cache items
+     */
+    const DEFAULT_TIME = 3600;
+
+
+    /**
+     * @var PCI Provides a property based cache interface
+     */
+    public $items;
+
+
+    /**
      * @var IDriver
      */
     private $driver;
@@ -19,9 +33,15 @@ class Cache
      */
     private $loaded = [];
 
+    /**
+     * Cache constructor.
+     * @param IDriver $driver
+     * @param null $driver_options
+     */
     public function __construct(IDriver $driver, $driver_options = null)
     {
         $this->driver = new $driver($driver_options);
+        $this->items = new PCI($this);
     }
 
     /**
@@ -33,7 +53,7 @@ class Cache
      * @return bool
      * @throws \Exception
      */
-    public function store($key, $value = null, $time = 3600)
+    public function store($key, $value = null, $time = self::DEFAULT_TIME)
     {
         if (is_array($key)) {
             $time = is_null($value) ? $time : $value;
@@ -83,7 +103,7 @@ class Cache
      *
      * @param $key
      * @param null $default
-     * @return array|mixed|null
+     * @return mixed
      */
     public function get($key, $default = null)
     {
