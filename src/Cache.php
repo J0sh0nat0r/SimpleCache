@@ -7,7 +7,6 @@ use J0sh0nat0r\SimpleCache\Internal\PCI;
 /**
  * The master cache class of SimpleCache
  *
- * Class Cache
  * @package J0sh0nat0r\SimpleCache
  */
 class Cache
@@ -35,6 +34,7 @@ class Cache
 
     /**
      * Cache constructor.
+     *
      * @param $driver
      * @param null|array $driver_options
      */

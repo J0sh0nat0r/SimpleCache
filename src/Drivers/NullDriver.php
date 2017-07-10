@@ -5,20 +5,15 @@ namespace J0sh0nat0r\SimpleCache\Drivers;
 use J0sh0nat0r\SimpleCache\IDriver;
 
 /**
- * Null driver for unit testing
+ * Null driver for unit tests
  *
- * Class Null
  * @package J0sh0nat0r\SimpleCache\Drivers
  */
-class Null implements IDriver
+class NullDriver implements IDriver
 {
-    public function __construct($options)
-    {
-    }
-
     public function set($key, $value, $time)
     {
-        return true;
+        return false;
     }
 
     public function has($key)
@@ -33,11 +28,11 @@ class Null implements IDriver
 
     public function remove($key)
     {
-        return true;
+        return false;
     }
 
     public function clear()
     {
-        return true;
+        return false;
     }
 }

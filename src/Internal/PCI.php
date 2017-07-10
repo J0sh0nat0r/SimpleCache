@@ -8,7 +8,6 @@ use J0sh0nat0r\SimpleCache\Cache;
 /**
  * Property-Cache interface.
  *
- * Class PCI
  * @package J0sh0nat0r\SimpleCache\Internal
  */
 class PCI
