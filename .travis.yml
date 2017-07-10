@@ -6,7 +6,10 @@ php:
 
 install:
  - composer install --prefer-dist
- - composer global require "squizlabs/php_codesniffer=*"
+ - pyrus install pear/PHP_CodeSniffer
+
+before_script:
+  - phpenv rehash
 
 script:
  - vendor/bin/phpunit
