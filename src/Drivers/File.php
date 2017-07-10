@@ -50,6 +50,11 @@ class File implements IDriver
         return true;
     }
 
+    public function has($key)
+    {
+        return is_dir($this->dir . '/' . sha1($key));
+    }
+
     public function get($key)
     {
         $dir = $this->dir . '/' . sha1($key);

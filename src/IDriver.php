@@ -21,6 +21,14 @@ interface IDriver
     function set($key, $value, $time);
 
     /**
+     * Check if a value is stored in the cahce
+     *
+     * @param string $key
+     * @return bool
+     */
+    function has($key);
+
+    /**
      * Get a value from the cache
      *
      * @param string $key

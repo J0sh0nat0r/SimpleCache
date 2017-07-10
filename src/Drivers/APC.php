@@ -25,6 +25,11 @@ class APC implements IDriver
         return ($this->prefix . 'store')($key, $value, $time);
     }
 
+    public function has($key)
+    {
+        return ($this->prefix . 'exists')($key);
+    }
+
     public function get($key)
     {
         $success = false;

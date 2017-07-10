@@ -29,6 +29,11 @@ class Memcached implements IDriver
         $this->pool->set($key, $value, $time);
     }
 
+    public function has($key)
+    {
+        return array_search($key, $this->pool->getAllKeys()) !== false;
+    }
+
     public function get($key)
     {
         return $this->pool->get($key);

@@ -21,6 +21,11 @@ class Null implements IDriver
         return true;
     }
 
+    public function has($key)
+    {
+        return false;
+    }
+
     public function get($key)
     {
         return null;

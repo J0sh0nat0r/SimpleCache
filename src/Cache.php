@@ -15,7 +15,7 @@ class Cache
     /**
      *  Default storage time for cache items
      */
-    const DEFAULT_TIME = 3600;
+    public static $DEFAULT_TIME = 3600;
 
 
     /**
@@ -54,27 +54,23 @@ class Cache
      * @param $key
      * @param null $value
      * @param int $time
-     * @return bool
+     * @return bool|array
      * @throws \Exception
      */
-    public function store($key, $value = null, $time = self::DEFAULT_TIME)
+    public function store($key, $value = null, $time = null)
     {
+        $time = empty($time) ? self::$DEFAULT_TIME : $time;
+
         if (is_array($key)) {
             $time = is_null($value) ? $time : $value;
             $values = $key;
-            $success = true;
 
+            $success = [];
             foreach ($values as $key => $value) {
-                if (!$this->store($key, $value, $time)) {
-                    $success = false;
-                }
+                $success[$key] = $this->store($key, $value, $time);
             }
 
             return $success;
-        }
-
-        if (is_null($value)) {
-            throw new \Exception('Cannot store null');
         }
 
         if (!is_int($time)) {
@@ -116,7 +112,7 @@ class Cache
             $results = [];
 
             foreach ($keys as $key) {
-                $results[$key] = $this->get($key);
+                $results[$key] = $this->get($key, $default);
             }
 
             return $results;
@@ -132,6 +128,7 @@ class Cache
             if (is_callable($default)) {
                 return $default();
             }
+
             return $default;
         }
 
@@ -146,7 +143,7 @@ class Cache
      * @param int $time
      * @param \Closure $generate
      * @param mixed $default
-     * @return array|mixed|null
+     * @return mixed
      */
     public function remember($key, $time, $generate, $default = null)
     {
@@ -167,27 +164,24 @@ class Cache
 
     /**
      * Check if the cache contains an item
-     * TODO: Native support in drivers?
      *
      * @param string|array $key The key (or keys) to search for
-     * @return bool
+     * @return bool|array
      */
     public function has($key)
     {
         if (is_array($key)) {
             $keys = $key;
-            $has = true;
 
+            $has = [];
             foreach ($keys as $key) {
-                if (!$this->has($key)) {
-                    $has = false;
-                }
+                $has[$key] = $this->has($key);
             }
 
             return $has;
         }
 
-        return !is_null($this->get($key));
+        return $this->driver->has($key);
     }
 
     /**
@@ -195,48 +189,31 @@ class Cache
      *
      * @param string|array $key
      * @param null $default
-     * @return array|mixed|null
+     * @return mixed
      */
     public function pull($key, $default = null)
     {
-        if (is_array($key)) {
-            $keys = $key;
-            $results = [];
-
-            foreach ($keys as $key) {
-                $results[$key] = $this->pull($key);
-            }
-
-            return $results;
-        }
-
-        $result = $this->driver->get($key);
-
-        if (is_null($result)) {
-            return $default;
-        }
+        $result = $this->get($key, $default);
 
         $this->remove($key);
 
-        return unserialize($result);
+        return $result;
     }
 
     /**
      * Remove a value (or multiple values) from the cache
      *
      * @param string|array $key
-     * @return bool
+     * @return bool|array
      */
     public function remove($key)
     {
         if (is_array($key)) {
             $keys = $key;
-            $success = true;
 
+            $success = [];
             foreach ($keys as $key) {
-                if (!$this->remove($key)) {
-                    $success = false;
-                }
+                $success[$key] = $this->remove($key);
             }
 
             return $success;
