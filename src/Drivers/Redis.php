@@ -59,7 +59,7 @@ class Redis implements IDriver
 
     public function remove($key)
     {
-        // Every deletion in Redis is a success ful deletion... I hope
+        // Every deletion in Redis is a successful deletion... I hope
         $this->redis->delete($key);
 
         return true;
