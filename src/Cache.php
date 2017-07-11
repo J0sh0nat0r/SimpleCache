@@ -40,20 +40,33 @@ class Cache
      */
     public function __construct($driver, $driver_options = null)
     {
-        if(!is_null($driver_options))
+        if (!is_null($driver_options)) {
             $this->driver = new $driver($driver_options);
-        else
+        } else {
             $this->driver = new $driver();
+        }
 
         $this->items = new PCI($this);
     }
 
     /**
+     * Store an item in the cache indefinitely
+     *
+     * @param  $key
+     * @param  null $value
+     * @return bool
+     */
+    public function forever($key, $value = null)
+    {
+        return $this->store($key, $value, 0);
+    }
+
+    /**
      * Store a value (or an array of key-value pairs) in the cache
      *
-     * @param $key
-     * @param null $value
-     * @param int $time
+     * @param  $key
+     * @param  null $value
+     * @param  int  $time
      * @return bool|array
      * @throws \Exception
      */
@@ -87,22 +100,40 @@ class Cache
     }
 
     /**
-     * Store an item in the cache indefinitely
+     * Try to find a value in the cache and return it,
+     * if we can't it will be calculated with the provided closure
      *
-     * @param $key
-     * @param null $value
-     * @return bool
+     * @param  string   $key
+     * @param  int      $time
+     * @param  \Closure $generate
+     * @param  mixed    $default
+     * @return mixed
      */
-    public function forever($key, $value = null)
+    public function remember($key, $time, $generate, $default = null)
     {
-        return $this->store($key, $value, 0);
+        if ($this->has($key)) {
+            return $this->get($key);
+        }
+
+        $value = $generate();
+
+        if (!is_null($value)) {
+            $this->store($key, $value, $time);
+            return $value;
+        }
+
+        if (is_callable($default)) {
+            return $default();
+        }
+
+        return $default;
     }
 
     /**
      * Fetch a value (or an multiple values) from the cache
      *
-     * @param $key
-     * @param null $default
+     * @param  $key
+     * @param  null $default
      * @return mixed
      */
     public function get($key, $default = null)
@@ -136,36 +167,9 @@ class Cache
     }
 
     /**
-     * Try to find a value in the cache and return it,
-     * if we can't it will be calculated with the provided closure
-     *
-     * @param string $key
-     * @param int $time
-     * @param \Closure $generate
-     * @param mixed $default
-     * @return mixed
-     */
-    public function remember($key, $time, $generate, $default = null)
-    {
-        $value = $this->get($key);
-
-        if (!is_null($value)) {
-            return $value;
-        }
-
-        $value = $generate();
-        if (!is_null($value)) {
-            $this->store($key, $value, $time);
-            return $value;
-        }
-
-        return $default;
-    }
-
-    /**
      * Check if the cache contains an item
      *
-     * @param string|array $key The key (or keys) to search for
+     * @param  string|array $key The key (or keys) to search for
      * @return bool|array
      */
     public function has($key)
@@ -187,8 +191,8 @@ class Cache
     /**
      * Fetch a value (or multiple values), remove it from the cache and then return it
      *
-     * @param string|array $key
-     * @param null $default
+     * @param  string|array $key
+     * @param  null         $default
      * @return mixed
      */
     public function pull($key, $default = null)
@@ -203,7 +207,7 @@ class Cache
     /**
      * Remove a value (or multiple values) from the cache
      *
-     * @param string|array $key
+     * @param  string|array $key
      * @return bool|array
      */
     public function remove($key)

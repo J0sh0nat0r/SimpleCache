@@ -19,20 +19,12 @@ class PCI
 
     /**
      * OCI constructor.
+     *
      * @param Cache $cache
      */
     public function __construct(Cache $cache)
     {
         $this->cache = $cache;
-    }
-
-    /**
-     * @param $name
-     * @param $value
-     */
-    function __set($name, $value)
-    {
-        $this->cache->store($name, $value);
     }
 
     /**
@@ -51,6 +43,15 @@ class PCI
     function __get($name)
     {
         return $this->cache->get($name);
+    }
+
+    /**
+     * @param $name
+     * @param $value
+     */
+    function __set($name, $value)
+    {
+        $this->cache->store($name, $value);
     }
 
     /**
