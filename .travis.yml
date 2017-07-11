@@ -6,11 +6,9 @@ php:
 
 install:
  - composer install --prefer-dist
- - pyrus install pear/PHP_CodeSniffer
 
 before_script:
   - phpenv rehash
 
 script:
  - vendor/bin/phpunit
- - phpcs src/
