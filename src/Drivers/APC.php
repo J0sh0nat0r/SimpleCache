@@ -1,7 +1,11 @@
 <?php
+/**
+ * Copyright (c) 2017 Josh P (joshp.xyz).
+ */
 
 namespace J0sh0nat0r\SimpleCache\Drivers;
 
+use J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException;
 use J0sh0nat0r\SimpleCache\IDriver;
 
 class APC implements IDriver
@@ -16,7 +20,7 @@ class APC implements IDriver
         } elseif (extension_loaded('apcu')) {
             $this->prefix = 'apcu_';
         } else {
-            throw new \Exception('SimpleCache APC driver requires APC or APCu');
+            throw new DriverOptionsInvalidException('SimpleCache APC driver requires APC or APCu');
         }
     }
 

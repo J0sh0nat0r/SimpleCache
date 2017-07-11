@@ -1,7 +1,11 @@
 <?php
+/**
+ * Copyright (c) 2017 Josh P (joshp.xyz).
+ */
 
 namespace J0sh0nat0r\SimpleCache\Drivers;
 
+use J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException;
 use J0sh0nat0r\SimpleCache\IDriver;
 
 class Memcached implements IDriver
@@ -13,13 +17,14 @@ class Memcached implements IDriver
         $this->pool = new \Memcached();
 
         if (!isset($options['servers'])) {
-            throw new \Exception('Please provide at least 1 server to the SimpleCache memcached driver');
+            throw new DriverOptionsInvalidException('Please provide at least 1 server to the SimpleCache memcached driver');
         }
 
         foreach ($options['servers'] as $server) {
             if (!(isset($server['host']) && isset($server['port']))) {
-                throw new \Exception('Missing host or port for SimpleCache Memcached server');
+                throw new DriverOptionsInvalidException('Missing host or port for SimpleCache Memcached server');
             }
+
             $this->pool->addServer($server['host'], $server['port']);
         }
     }

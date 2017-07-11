@@ -1,7 +1,11 @@
 <?php
+/**
+ * Copyright (c) 2017 Josh P (joshp.xyz).
+ */
 
 namespace J0sh0nat0r\SimpleCache\Drivers;
 
+use J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException;
 use J0sh0nat0r\SimpleCache\IDriver;
 
 class File implements IDriver
@@ -12,7 +16,7 @@ class File implements IDriver
     public function __construct($options)
     {
         if (!isset($options['dir'])) {
-            throw new \Exception('No dir option passed for SimpleCache File driver');
+            throw new DriverOptionsInvalidException('No dir option passed for SimpleCache File driver');
         }
 
         $this->dir = rtrim($options['dir'], '/');
