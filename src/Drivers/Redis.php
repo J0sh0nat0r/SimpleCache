@@ -40,6 +40,16 @@ class Redis implements IDriver
                 throw new \Exception('Failed to authenticate with Redis: ' . $this->redis->getLastError());
             }
         }
+
+        if(isset($server['database']))
+        {
+            $success = $this->redis->select($server['database']);
+
+            if(!$success)
+            {
+                throw new \Exception('Failed to set redis database ' . $this->redis->getLastError());
+            }
+        }
     }
 
     public function set($key, $value, $time)
