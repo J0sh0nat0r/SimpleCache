@@ -15,23 +15,24 @@ use J0sh0nat0r\SimpleCache\Internal\PCI;
 class Cache
 {
     /**
-     *  Default storage time for cache items
+     *  @var  int $DEFAULT_TIME  Default storage time for cache items
      */
     public static $DEFAULT_TIME = 3600;
 
 
     /**
-     * @var  PCI  Provides a property based cache interface
+     * @var  PCI $items  Provides a Property based Cache Interface (PCI)
      */
     public $items;
 
 
     /**
-     * @var  IDriver
+     * @var  IDriver $driver  The driver
      */
     private $driver;
+
     /**
-     * @var  array
+     * @var  array $loaded  Array containing items that have previously been loaded
      */
     private $loaded = [];
 
@@ -61,9 +62,8 @@ class Cache
      * @param  mixed        $value  Value of the item (can also be the time in teh case that $key is an array)
      * @param  int          $time   Time to store the item for (can also be null in the case that $key is an array)
      *
-     * @return bool|array
-     *
      * @throws \Exception
+     * @return bool|array
      */
     public function store($key, $value = null, $time = null)
     {
