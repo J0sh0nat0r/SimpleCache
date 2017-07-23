@@ -9,12 +9,12 @@ namespace J0sh0nat0r\SimpleCache;
  * A static wrapper around a SimpleCache instance (e.g for a global cache)
  *
  * @method  static bool|array  store(string|array $key, mixed $value, int $time = null)
- * @method  static mixed       remember(string|array $key, int $time, \Closure $generate, mixed $default = null)
+ * @method  static mixed       remember(string $key, int $time, \Closure $generate, mixed $default = null)
  * @method  static bool|array  forever(string|array $key, mixed $value = null)
- * @method  static bool|array  has(string|array $key)
- * @method  static mixed       get(string|array $key, mixed $default)
- * @method  static mixed       pull(string|array $key, mixed $default)
- * @method  static bool|array  remove(string|array $key)
+ * @method  static bool|array  has(string|string[] $key)
+ * @method  static mixed       get(string|string[] $key, mixed $default)
+ * @method  static mixed       pull(string|string[] $key, mixed $default)
+ * @method  static bool|array  remove(string|string[] $key)
  * @method  static bool        clear()
  *
  * @category  Class

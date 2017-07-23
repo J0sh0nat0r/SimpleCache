@@ -58,12 +58,12 @@ class Cache
     /**
      * Store a value (or an array of key-value pairs) in the cache
      *
-     * @param  string|array $key    The key to store the item under(can also be a `key => value` array)
-     * @param  mixed        $value  Value of the item (can also be the time in teh case that $key is an array)
-     * @param  int          $time   Time to store the item for (can also be null in the case that $key is an array)
+     * @param  string|array    $key    The key to store the item under(can also be a `key => value` array)
+     * @param  mixed           $value  Value of the item (can also be the time in the case that $key is an array)
+     * @param  int             $time   Time to store the item for (can also be null in the case that $key is an array)
      *
      * @throws \Exception
-     * @return bool|array
+     * @return bool|bool[]
      */
     public function store($key, $value = null, $time = null)
     {
@@ -92,6 +92,19 @@ class Cache
         }
 
         return $success;
+    }
+
+    /**
+     * Store a item (or an array of items) in the cache indefinitely
+     *
+     * @param  string|array    $key    The key to store the item under (can also be a `key => value` array)
+     * @param  mixed           $value  Value of the item (leave null of $key is a `key => value` array
+     *
+     * @return bool|bool[]
+     */
+    public function forever($key, $value = null)
+    {
+        return $this->store($key, $value, 0);
     }
 
     /**
@@ -125,26 +138,13 @@ class Cache
         return $default;
     }
 
-    /**
-     * Store an item in the cache indefinitely
-     *
-     * @param  string|array $key    The key to store the item under
-     * @param  mixed        $value  The value of the item
-     *
-     * @return bool|array
-     */
-    public function forever($key, $value = null)
-    {
-        return $this->store($key, $value, 0);
-    }
-
 
     /**
      * Check if the cache contains an item
      *
-     * @param  string|array $key  The key (or keys) to search for
+     * @param  string|string[] $key  The key (or keys) to search for
      *
-     * @return bool|array
+     * @return bool|bool[]
      */
     public function has($key)
     {
@@ -166,8 +166,8 @@ class Cache
     /**
      * Fetch a value (or an multiple values) from the cache
      *
-     * @param  string|array $key      The key (or keys) to retrieve the values of
-     * @param  mixed        $default  Default value in case an item isn't found (can be a callback)
+     * @param  string|string[] $key      The key (or keys) to retrieve the values of
+     * @param  mixed           $default  Default value in case an item isn't found (can be a callback)
      *
      * @return mixed
      */
@@ -202,10 +202,10 @@ class Cache
     }
 
     /**
-     * Fetch a value (or multiple values), remove it from the cache and then return it
+     * Fetch an item (or multiple items) from the cache, then remove it
      *
-     * @param  string|array $key      Key of the item to pull (can also be an array of keys)
-     * @param  mixed        $default  Default value in case an item isn't found (can be a callback)
+     * @param  string|string[] $key      Key of the item to pull (can also be an array of keys)
+     * @param  mixed           $default  Default value in case an item isn't found (can be a callback)
      *
      * @return mixed
      */
@@ -220,11 +220,11 @@ class Cache
 
 
     /**
-     * Remove a value (or multiple values) from the cache
+     * Remove an item (or multiple items) from the cache
      *
-     * @param  string|array $key  Key of the item to remove (can also be an array of keys)
+     * @param  string|string[] $key  Key of the item to remove (can also be an array of keys)
      *
-     * @return bool|array
+     * @return bool|bool[]
      */
     public function remove($key)
     {
