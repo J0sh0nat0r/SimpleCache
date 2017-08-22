@@ -6,7 +6,7 @@
 namespace J0sh0nat0r\SimpleCache;
 
 /**
- * A static wrapper around a SimpleCache instance (e.g for a global cache)
+ * A static wrapper around a SimpleCache instance (e.g for a global cache).
  *
  * @method  static bool|array  store(string|array $key, mixed $value, int $time = null)
  * @method  static mixed       remember(string $key, int $time, \Closure $generate, mixed $default = null)
@@ -18,24 +18,23 @@ namespace J0sh0nat0r\SimpleCache;
  * @method  static bool        clear()
  *
  * @category  Class
+ *
  * @author    Josh P
- * @package   J0sh0nat0r\SimpleCache
  */
 class StaticFacade
 {
     /**
-     * Cache instance for the static facade
+     * Cache instance for the static facade.
      *
      * @var Cache
      */
     private static $cache;
 
-
     /**
-     * Handle static calls and proxy them to $cache
+     * Handle static calls and proxy them to $cache.
      *
-     * @param  string     $name       Name of the function being called
-     * @param  array|null $arguments  Arguments passed ot the function being called
+     * @param string     $name      Name of the function being called
+     * @param array|null $arguments Arguments passed ot the function being called
      *
      * @return mixed
      */
@@ -43,31 +42,27 @@ class StaticFacade
     {
         self::_checkBound();
 
-        if(method_exists(self::$cache, $name))
-        {
+        if (method_exists(self::$cache, $name)) {
             return call_user_func_array([self::$cache, $name], $arguments);
         }
-
-        return null;
     }
 
-
     /**
-     * Bind the StaticFacade to a SimpleCache instance
+     * Bind the StaticFacade to a SimpleCache instance.
      *
-     * @param  Cache $cache  The SimpleCache instance to bind to
+     * @param Cache $cache The SimpleCache instance to bind to
      */
     public static function bind($cache)
     {
         self::$cache = $cache;
     }
 
-
     /**
      * Checks if the StaticFacade has been bound to a SimpleCache instance,
      * and, if not, an exception will be thrown.
      *
      * @throws \Exception
+     *
      * @return void
      */
     private static function _checkBound()

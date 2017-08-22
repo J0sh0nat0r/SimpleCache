@@ -8,25 +8,22 @@ namespace J0sh0nat0r\SimpleCache\Drivers;
 use J0sh0nat0r\SimpleCache\IDriver;
 
 /**
- * Array driver for unit tests
+ * Array driver for unit tests.
  *
  * Accepted options: None
- *
- * @package J0sh0nat0r\SimpleCache\Drivers
  */
 class ArrayDriver implements IDriver
 {
     /**
-     * @var  array[] $items
+     * @var array[]
      */
     private $items;
-
 
     public function set($key, $value, $time)
     {
         $items[$key] = [
-            'value' => $value,
-            'expiry' => time() + $time
+            'value'  => $value,
+            'expiry' => time() + $time,
         ];
     }
 
@@ -40,6 +37,7 @@ class ArrayDriver implements IDriver
 
         if ($item['expiry'] !== 0 && $item['expiry'] < time()) {
             $this->remove($key);
+
             return false;
         }
 
@@ -49,7 +47,7 @@ class ArrayDriver implements IDriver
     public function get($key)
     {
         if (!$this->has($key)) {
-            return null;
+            return;
         }
 
         return $this->items[$key];
@@ -58,6 +56,7 @@ class ArrayDriver implements IDriver
     public function remove($key)
     {
         unset($this->items[$key]);
+
         return true;
     }
 
