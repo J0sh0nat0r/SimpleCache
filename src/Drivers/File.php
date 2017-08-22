@@ -8,6 +8,14 @@ namespace J0sh0nat0r\SimpleCache\Drivers;
 use J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException;
 use J0sh0nat0r\SimpleCache\IDriver;
 
+/**
+ * File driver
+ *
+ * Accepted options:
+ * dir - The directory to store cache files in
+ *
+ * @package J0sh0nat0r\SimpleCache\Drivers
+ */
 class File implements IDriver
 {
     private $dir;
@@ -34,24 +42,6 @@ class File implements IDriver
         }
     }
 
-    public function remove($key)
-    {
-        try {
-            $dir = $this->dir . '/' . sha1($key);
-
-            if (!is_dir($dir)) {
-                return false;
-            }
-
-            unlink($dir . '/data.json');
-            unlink($dir . '/item.dat');
-            rmdir($dir);
-        } catch (\Exception $e) {
-            return false;
-        }
-
-        return true;
-    }
 
     public function set($key, $value, $time)
     {
@@ -87,6 +77,25 @@ class File implements IDriver
         }
 
         return file_get_contents($dir . '/item.dat');
+    }
+
+    public function remove($key)
+    {
+        try {
+            $dir = $this->dir . '/' . sha1($key);
+
+            if (!is_dir($dir)) {
+                return false;
+            }
+
+            unlink($dir . '/data.json');
+            unlink($dir . '/item.dat');
+            rmdir($dir);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return true;
     }
 
     public function clear()

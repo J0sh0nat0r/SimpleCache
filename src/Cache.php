@@ -89,9 +89,10 @@ class Cache
 
         if ($success) {
             $this->loaded[$key] = $value;
+            return true;
         }
 
-        return $success;
+        return false;
     }
 
     /**

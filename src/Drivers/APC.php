@@ -8,8 +8,18 @@ namespace J0sh0nat0r\SimpleCache\Drivers;
 use J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException;
 use J0sh0nat0r\SimpleCache\IDriver;
 
+/**
+ * APC Driver
+ *
+ * Accepted options: None
+ *
+ * @package J0sh0nat0r\SimpleCache\Drivers
+ */
 class APC implements IDriver
 {
+    /**
+     * @var  string $prefix APC prefix (apc_ or apcu_)
+     */
     private $prefix;
 
 

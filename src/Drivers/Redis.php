@@ -8,10 +8,20 @@ namespace J0sh0nat0r\SimpleCache\Drivers;
 use J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException;
 use J0sh0nat0r\SimpleCache\IDriver;
 
+/**
+ * Redis driver
+ *
+ * Accepted options:
+ * host - redis server host
+ * port - (optional) redis server port
+ * password - (optional) redis server password
+ *
+ * @package J0sh0nat0r\SimpleCache\Drivers
+ */
 class Redis implements IDriver
 {
     /**
-     * @var \Redis
+     * @var  \Redis $redis
      */
     private $redis;
 

@@ -8,8 +8,6 @@ namespace J0sh0nat0r\SimpleCache;
 /**
  * The interface which provides the template for drivers
  *
- * Interface IDriver
- *
  * @package J0sh0nat0r\SimpleCache
  */
 interface IDriver
@@ -20,14 +18,16 @@ interface IDriver
      * @param  string $key
      * @param  mixed  $value
      * @param  int    $time
+     *
      * @return bool
      */
     function set($key, $value, $time);
 
     /**
-     * Check if a value is stored in the cahce
+     * Check if a value is stored in the cache
      *
      * @param  string $key
+     *
      * @return bool
      */
     function has($key);
@@ -36,7 +36,8 @@ interface IDriver
      * Get a value from the cache
      *
      * @param  string $key
-     * @return mixed
+     *
+     * @return string
      */
     function get($key);
 
@@ -44,6 +45,7 @@ interface IDriver
      * Remove a value from the cache
      *
      * @param  string $key
+     *
      * @return bool
      */
     function remove($key);

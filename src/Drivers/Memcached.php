@@ -8,6 +8,16 @@ namespace J0sh0nat0r\SimpleCache\Drivers;
 use J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException;
 use J0sh0nat0r\SimpleCache\IDriver;
 
+/**
+ * Memcached driver
+ *
+ *
+ * Accepted options:
+ * servers - array of servers
+ *
+ *
+ * @package J0sh0nat0r\SimpleCache\Drivers
+ */
 class Memcached implements IDriver
 {
     private $pool;
@@ -21,7 +31,7 @@ class Memcached implements IDriver
         }
 
         foreach ($options['servers'] as $server) {
-            if (!(isset($server['host']) && isset($server['port']))) {
+            if (!(isset($server['host']) || !isset($server['port']))) {
                 throw new DriverOptionsInvalidException('Missing host or port for SimpleCache Memcached server');
             }
 
@@ -31,7 +41,7 @@ class Memcached implements IDriver
 
     public function set($key, $value, $time)
     {
-        $this->pool->set($key, $value, $time);
+        return $this->pool->set($key, $value, $time);
     }
 
     public function has($key)
