@@ -9,19 +9,16 @@ use J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException;
 use J0sh0nat0r\SimpleCache\IDriver;
 
 /**
- * APC Driver
+ * APC Driver.
  *
  * Accepted options: None
- *
- * @package J0sh0nat0r\SimpleCache\Drivers
  */
 class APC implements IDriver
 {
     /**
-     * @var  string $prefix APC prefix (apc_ or apcu_)
+     * @var string APC prefix (apc_ or apcu_)
      */
     private $prefix;
-
 
     public function __construct()
     {
@@ -36,22 +33,22 @@ class APC implements IDriver
 
     public function set($key, $value, $time)
     {
-        return ($this->prefix . 'store')($key, $value, $time);
+        return ($this->prefix.'store')($key, $value, $time);
     }
 
     public function has($key)
     {
-        return ($this->prefix . 'exists')($key);
+        return ($this->prefix.'exists')($key);
     }
 
     public function get($key)
     {
         $success = false;
 
-        $result = ($this->prefix . 'fetch')($key, $success);
+        $result = ($this->prefix.'fetch')($key, $success);
 
         if (!$success) {
-            return null;
+            return;
         }
 
         return $result;
@@ -59,7 +56,7 @@ class APC implements IDriver
 
     public function remove($key)
     {
-        return ($this->prefix . 'delete')($key);
+        return ($this->prefix.'delete')($key);
     }
 
     public function clear()
@@ -67,6 +64,7 @@ class APC implements IDriver
         if ($this->prefix === 'apc_') {
             return apc_clear_cache('user');
         }
+
         return apcu_clear_cache();
     }
 }

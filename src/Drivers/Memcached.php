@@ -9,14 +9,11 @@ use J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException;
 use J0sh0nat0r\SimpleCache\IDriver;
 
 /**
- * Memcached driver
+ * Memcached driver.
  *
  *
  * Accepted options:
  * servers - array of servers
- *
- *
- * @package J0sh0nat0r\SimpleCache\Drivers
  */
 class Memcached implements IDriver
 {

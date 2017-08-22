@@ -9,22 +9,19 @@ use J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException;
 use J0sh0nat0r\SimpleCache\IDriver;
 
 /**
- * Redis driver
+ * Redis driver.
  *
  * Accepted options:
  * host - redis server host
  * port - (optional) redis server port
  * password - (optional) redis server password
- *
- * @package J0sh0nat0r\SimpleCache\Drivers
  */
 class Redis implements IDriver
 {
     /**
-     * @var  \Redis $redis
+     * @var \Redis
      */
     private $redis;
-
 
     public function __construct($options)
     {
@@ -39,25 +36,22 @@ class Redis implements IDriver
         $connected = $this->redis->connect($server['host'], isset($server['port']) ? $server['port'] : null);
 
         if (!$connected) {
-            throw new \Exception('Failed to connect to Redis: ' . $this->redis->getLastError());
+            throw new \Exception('Failed to connect to Redis: '.$this->redis->getLastError());
         }
 
-        if(isset($server['password']))
-        {
+        if (isset($server['password'])) {
             $authenticated = $this->redis->auth($server['password']);
 
             if (!$authenticated) {
-                throw new \Exception('Failed to authenticate with Redis: ' . $this->redis->getLastError());
+                throw new \Exception('Failed to authenticate with Redis: '.$this->redis->getLastError());
             }
         }
 
-        if(isset($server['database']))
-        {
+        if (isset($server['database'])) {
             $success = $this->redis->select($server['database']);
 
-            if(!$success)
-            {
-                throw new \Exception('Failed to set redis database ' . $this->redis->getLastError());
+            if (!$success) {
+                throw new \Exception('Failed to set redis database '.$this->redis->getLastError());
             }
         }
     }

@@ -6,9 +6,7 @@
 namespace J0sh0nat0r\SimpleCache\Exceptions;
 
 /**
- * Exception thrown when invalid argument(s) are passed to a driver
- *
- * @package J0sh0nat0r\SimpleCache\Exceptions
+ * Exception thrown when invalid argument(s) are passed to a driver.
  */
 class DriverOptionsInvalidException extends \Exception
 {
