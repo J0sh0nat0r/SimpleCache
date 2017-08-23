@@ -17,6 +17,8 @@ use J0sh0nat0r\SimpleCache\IDriver;
 class File implements IDriver
 {
     private $dir;
+    private $encrypt_data;
+    private $encryption_key;
 
     public function __construct($options)
     {
@@ -25,6 +27,11 @@ class File implements IDriver
         }
 
         $this->dir = rtrim($options['dir'], '/');
+
+        if (isset($options['encryption_key'])) {
+            $this->encrypt_data = true;
+            $this->encryption_key = $options['encryption_key'];
+        }
 
         if (!is_dir($this->dir)) {
             mkdir($this->dir);
@@ -48,9 +55,19 @@ class File implements IDriver
                 mkdir($dir);
             }
 
+            if ($this->encrypt_data) {
+                $value = $this->encrypt($value);
+            }
+
             $expiry = $time > 0 ? time() + $time : 0;
 
-            file_put_contents($dir.'/data.json', json_encode(['expiry' => $expiry, 'key' => $key]));
+            $item = [
+                'key' => $key,
+                'expiry' => $expiry,
+                'encrypted' => $this->encrypt_data
+            ];
+
+            file_put_contents($dir . '/data.json', json_encode($item));
             file_put_contents($dir.'/item.dat', $value);
         } catch (\Exception $e) {
             return false;
@@ -68,11 +85,24 @@ class File implements IDriver
     {
         $dir = $this->dir.'/'.sha1($key);
 
-        if (!is_dir($dir)) {
-            return;
+        if (is_dir($dir)) {
+            $data = json_decode(file_get_contents($dir . '/data.json'), true);
+
+            if ($data['expiry'] <= time()) {
+                $this->remove($key);
+                return null;
+            }
+
+            if ($this->encrypt_data) {
+                if ($data['encrypted']) {
+                    return $this->decrypt(file_get_contents($dir . '/item.dat'));
+                }
+            }
+
+            return file_get_contents($dir . '/item.dat');
         }
 
-        return file_get_contents($dir.'/item.dat');
+        return null;
     }
 
     public function remove($key)
@@ -100,5 +130,15 @@ class File implements IDriver
             $data = json_decode(file_get_contents($item.'/data.json'), true);
             $this->remove($data['key']);
         }
+    }
+
+    private function encrypt($data)
+    {
+        return openssl_encrypt($data, 'aes-256-gcm', $this->encryption_key);
+    }
+
+    private function decrypt($data)
+    {
+        return openssl_decrypt($data, 'aes-256-gcm', $this->encryption_key);
     }
 }
