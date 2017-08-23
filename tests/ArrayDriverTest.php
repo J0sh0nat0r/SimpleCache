@@ -42,13 +42,13 @@ class ArrayDriverTest extends TestCase
         $this->assertNull($this->driver->get('testing'));
     }
 
-    public function testRemoveFails()
+    public function testRemoveSucceeds()
     {
-        $this->assertFalse($this->driver->remove('testing'));
+        $this->assertTrue($this->driver->remove('testing'));
     }
 
-    public function testClearFails()
+    public function testClearSucceeds()
     {
-        $this->assertFalse($this->driver->clear());
+        $this->assertTrue($this->driver->clear());
     }
 }
