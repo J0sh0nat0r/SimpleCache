@@ -55,7 +55,6 @@ class File implements IDriver
                 mkdir($dir);
             }
 
-
             $expiry = $time > 0 ? time() + $time : 0;
 
             $item = [
