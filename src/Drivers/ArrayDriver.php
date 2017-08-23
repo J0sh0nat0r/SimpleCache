@@ -25,6 +25,8 @@ class ArrayDriver implements IDriver
             'value'  => $value,
             'expiry' => time() + $time,
         ];
+
+        return true;
     }
 
     public function has($key)
@@ -46,11 +48,9 @@ class ArrayDriver implements IDriver
 
     public function get($key)
     {
-        if (!$this->has($key)) {
-            return;
+        if ($this->has($key)) {
+            $this->items[$key];
         }
-
-        return $this->items[$key];
     }
 
     public function remove($key)
@@ -63,5 +63,7 @@ class ArrayDriver implements IDriver
     public function clear()
     {
         $this->items = [];
+
+        return true;
     }
 }
