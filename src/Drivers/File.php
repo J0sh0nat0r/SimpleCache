@@ -138,6 +138,7 @@ class File implements IDriver
     private function encrypt($data, &$iv)
     {
         $iv = bin2hex(openssl_random_pseudo_bytes(6));
+
         return openssl_encrypt($data, 'aes-256-gcm', $this->encryption_key, 0, $iv);
     }
 
