@@ -13,6 +13,7 @@ use J0sh0nat0r\SimpleCache\IDriver;
  *
  * Accepted options:
  * dir - The directory to store cache files in
+ * encryption_key - The key to use for encrypting data, if not set data will NOT be encrypted
  */
 class File implements IDriver
 {
@@ -27,14 +28,13 @@ class File implements IDriver
         }
 
         $this->dir = rtrim($options['dir'], '/');
+        if (!is_dir($this->dir)) {
+            mkdir($this->dir);
+        }
 
         if (isset($options['encryption_key'])) {
             $this->encrypt_data = true;
             $this->encryption_key = $options['encryption_key'];
-        }
-
-        if (!is_dir($this->dir)) {
-            mkdir($this->dir);
         }
 
         foreach (glob($this->dir.'/*', GLOB_ONLYDIR) as $item) {
@@ -55,9 +55,6 @@ class File implements IDriver
                 mkdir($dir);
             }
 
-            if ($this->encrypt_data) {
-                $value = $this->encrypt($value);
-            }
 
             $expiry = $time > 0 ? time() + $time : 0;
 
@@ -66,6 +63,11 @@ class File implements IDriver
                 'expiry'    => $expiry,
                 'encrypted' => $this->encrypt_data,
             ];
+
+            if ($this->encrypt_data) {
+                $value = $this->encrypt($value, $iv);
+                $item['iv'] = $iv;
+            }
 
             file_put_contents($dir.'/data.json', json_encode($item));
             file_put_contents($dir.'/item.dat', $value);
@@ -91,17 +93,19 @@ class File implements IDriver
             if ($data['expiry'] <= time()) {
                 $this->remove($key);
 
-                return;
+                return null;
             }
 
             if ($this->encrypt_data) {
                 if ($data['encrypted']) {
-                    return $this->decrypt(file_get_contents($dir.'/item.dat'));
+                    return $this->decrypt(file_get_contents($dir.'/item.dat'), $data['iv']);
                 }
             }
 
             return file_get_contents($dir.'/item.dat');
         }
+
+        return null;
     }
 
     public function remove($key)
@@ -131,13 +135,14 @@ class File implements IDriver
         }
     }
 
-    private function encrypt($data)
+    private function encrypt($data, &$iv)
     {
-        return openssl_encrypt($data, 'aes-256-gcm', $this->encryption_key);
+        $iv = sha1(openssl_random_pseudo_bytes(2048));
+        return openssl_encrypt($data, 'aes-256-gcm', $this->encryption_key, 0, $iv);
     }
 
-    private function decrypt($data)
+    private function decrypt($data, $iv)
     {
-        return openssl_decrypt($data, 'aes-256-gcm', $this->encryption_key);
+        return openssl_decrypt($data, 'aes-256-gcm', $this->encryption_key, 0, $iv);
     }
 }

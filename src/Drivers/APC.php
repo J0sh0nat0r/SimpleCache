@@ -48,7 +48,7 @@ class APC implements IDriver
         $result = ($this->prefix.'fetch')($key, $success);
 
         if (!$success) {
-            return;
+            return null;
         }
 
         return $result;
