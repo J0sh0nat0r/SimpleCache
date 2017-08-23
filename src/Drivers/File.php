@@ -62,12 +62,12 @@ class File implements IDriver
             $expiry = $time > 0 ? time() + $time : 0;
 
             $item = [
-                'key' => $key,
-                'expiry' => $expiry,
-                'encrypted' => $this->encrypt_data
+                'key'       => $key,
+                'expiry'    => $expiry,
+                'encrypted' => $this->encrypt_data,
             ];
 
-            file_put_contents($dir . '/data.json', json_encode($item));
+            file_put_contents($dir.'/data.json', json_encode($item));
             file_put_contents($dir.'/item.dat', $value);
         } catch (\Exception $e) {
             return false;
@@ -86,23 +86,22 @@ class File implements IDriver
         $dir = $this->dir.'/'.sha1($key);
 
         if (is_dir($dir)) {
-            $data = json_decode(file_get_contents($dir . '/data.json'), true);
+            $data = json_decode(file_get_contents($dir.'/data.json'), true);
 
             if ($data['expiry'] <= time()) {
                 $this->remove($key);
-                return null;
+
+                return;
             }
 
             if ($this->encrypt_data) {
                 if ($data['encrypted']) {
-                    return $this->decrypt(file_get_contents($dir . '/item.dat'));
+                    return $this->decrypt(file_get_contents($dir.'/item.dat'));
                 }
             }
 
-            return file_get_contents($dir . '/item.dat');
+            return file_get_contents($dir.'/item.dat');
         }
-
-        return null;
     }
 
     public function remove($key)
