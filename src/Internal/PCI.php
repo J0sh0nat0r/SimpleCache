@@ -7,11 +7,8 @@ namespace J0sh0nat0r\SimpleCache\Internal;
 
 use J0sh0nat0r\SimpleCache\Cache;
 
-
 /**
  * Property-Cache interface.
- *
- * @package J0sh0nat0r\SimpleCache\Internal
  */
 class PCI
 {
@@ -32,18 +29,20 @@ class PCI
 
     /**
      * @param $name
+     *
      * @return bool
      */
-    function __isset($name)
+    public function __isset($name)
     {
         return $this->cache->has($name);
     }
 
     /**
      * @param $name
+     *
      * @return mixed
      */
-    function __get($name)
+    public function __get($name)
     {
         return $this->cache->get($name);
     }
@@ -52,7 +51,7 @@ class PCI
      * @param $name
      * @param $value
      */
-    function __set($name, $value)
+    public function __set($name, $value)
     {
         $this->cache->store($name, $value);
     }
@@ -60,7 +59,7 @@ class PCI
     /**
      * @param $name
      */
-    function __unset($name)
+    public function __unset($name)
     {
         $this->cache->remove($name);
     }

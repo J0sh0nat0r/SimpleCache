@@ -8,40 +8,35 @@ namespace J0sh0nat0r\SimpleCache;
 use J0sh0nat0r\SimpleCache\Internal\PCI;
 
 /**
- * The master cache class of SimpleCache
- *
- * @package J0sh0nat0r\SimpleCache
+ * The master cache class of SimpleCache.
  */
 class Cache
 {
     /**
-     *  @var  int $DEFAULT_TIME  Default storage time for cache items
+     *  @var  int  Default storage time for cache items
      */
     public static $DEFAULT_TIME = 3600;
 
-
     /**
-     * @var  PCI $items  Provides a Property based Cache Interface (PCI)
+     * @var PCI Provides a Property based Cache Interface (PCI)
      */
     public $items;
 
-
     /**
-     * @var  IDriver $driver  The driver
+     * @var IDriver The driver
      */
     private $driver;
 
     /**
-     * @var  array $loaded  Array containing items that have previously been loaded
+     * @var array Array containing items that have previously been loaded
      */
     private $loaded = [];
-
 
     /**
      * Cache constructor.
      *
-     * @param string     $driver          The driver to use
-     * @param null|array $driver_options  Options to pass to the driver
+     * @param string     $driver         The driver to use
+     * @param null|array $driver_options Options to pass to the driver
      */
     public function __construct($driver, $driver_options = null)
     {
@@ -54,15 +49,15 @@ class Cache
         $this->items = new PCI($this);
     }
 
-
     /**
-     * Store a value (or an array of key-value pairs) in the cache
+     * Store a value (or an array of key-value pairs) in the cache.
      *
-     * @param  string|array    $key    The key to store the item under(can also be a `key => value` array)
-     * @param  mixed           $value  Value of the item (can also be the time in the case that $key is an array)
-     * @param  int             $time   Time to store the item for (can also be null in the case that $key is an array)
+     * @param string|array $key   The key to store the item under(can also be a `key => value` array)
+     * @param mixed        $value Value of the item (can also be the time in the case that $key is an array)
+     * @param int          $time  Time to store the item for (can also be null in the case that $key is an array)
      *
      * @throws \Exception
+     *
      * @return bool|bool[]
      */
     public function store($key, $value = null, $time = null)
@@ -89,6 +84,7 @@ class Cache
 
         if ($success) {
             $this->loaded[$key] = $value;
+
             return true;
         }
 
@@ -96,10 +92,10 @@ class Cache
     }
 
     /**
-     * Store a item (or an array of items) in the cache indefinitely
+     * Store a item (or an array of items) in the cache indefinitely.
      *
-     * @param  string|array    $key    The key to store the item under (can also be a `key => value` array)
-     * @param  mixed           $value  Value of the item (leave null of $key is a `key => value` array
+     * @param string|array $key   The key to store the item under (can also be a `key => value` array)
+     * @param mixed        $value Value of the item (leave null of $key is a `key => value` array
      *
      * @return bool|bool[]
      */
@@ -110,12 +106,12 @@ class Cache
 
     /**
      * Try to find a value in the cache and return it,
-     * if we can't it will be calculated with the provided closure
+     * if we can't it will be calculated with the provided closure.
      *
-     * @param  string   $key       Key of the item to remember
-     * @param  int      $time      Time to remember the item for
-     * @param  \Closure $generate  Function used to generate the value
-     * @param  mixed    $default   Default value in case an item isn't found and $generate returns null (can be a callback)
+     * @param string   $key      Key of the item to remember
+     * @param int      $time     Time to remember the item for
+     * @param \Closure $generate Function used to generate the value
+     * @param mixed    $default  Default value in case an item isn't found and $generate returns null (can be a callback)
      *
      * @return mixed
      */
@@ -129,6 +125,7 @@ class Cache
 
         if (!is_null($value)) {
             $this->store($key, $value, $time);
+
             return $value;
         }
 
@@ -139,11 +136,10 @@ class Cache
         return $default;
     }
 
-
     /**
-     * Check if the cache contains an item
+     * Check if the cache contains an item.
      *
-     * @param  string|string[] $key  The key (or keys) to search for
+     * @param string|string[] $key The key (or keys) to search for
      *
      * @return bool|bool[]
      */
@@ -163,12 +159,11 @@ class Cache
         return $this->driver->has($key);
     }
 
-
     /**
-     * Fetch a value (or an multiple values) from the cache
+     * Fetch a value (or an multiple values) from the cache.
      *
-     * @param  string|string[] $key      The key (or keys) to retrieve the values of
-     * @param  mixed           $default  Default value in case an item isn't found (can be a callback)
+     * @param string|string[] $key     The key (or keys) to retrieve the values of
+     * @param mixed           $default Default value in case an item isn't found (can be a callback)
      *
      * @return mixed
      */
@@ -203,10 +198,10 @@ class Cache
     }
 
     /**
-     * Fetch an item (or multiple items) from the cache, then remove it
+     * Fetch an item (or multiple items) from the cache, then remove it.
      *
-     * @param  string|string[] $key      Key of the item to pull (can also be an array of keys)
-     * @param  mixed           $default  Default value in case an item isn't found (can be a callback)
+     * @param string|string[] $key     Key of the item to pull (can also be an array of keys)
+     * @param mixed           $default Default value in case an item isn't found (can be a callback)
      *
      * @return mixed
      */
@@ -219,11 +214,10 @@ class Cache
         return $value;
     }
 
-
     /**
-     * Remove an item (or multiple items) from the cache
+     * Remove an item (or multiple items) from the cache.
      *
-     * @param  string|string[] $key  Key of the item to remove (can also be an array of keys)
+     * @param string|string[] $key Key of the item to remove (can also be an array of keys)
      *
      * @return bool|bool[]
      */
@@ -248,7 +242,7 @@ class Cache
     }
 
     /**
-     * Clears the cache, removing ALL items
+     * Clears the cache, removing ALL items.
      *
      * @return bool
      */
