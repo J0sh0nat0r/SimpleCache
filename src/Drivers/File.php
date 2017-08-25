@@ -227,10 +227,15 @@ class File implements IDriver
      */
     private function encrypt($data, &$iv)
     {
-        $tag = 'simple-cache';
         $iv = bin2hex(openssl_random_pseudo_bytes(6));
 
-        return openssl_encrypt($data, 'aes-256-gcm', $this->encryption_key, 0, $iv, $tag);
+        if (PHP_VERSION_ID >= 70100) {
+            $tag = 'simple-cache';
+
+            return openssl_encrypt($data, 'aes-256-gcm', $this->encryption_key, 0, $iv, $tag);
+        }
+
+        return openssl_encrypt($data, 'aes-256-gcm', $this->encryption_key, 0, $iv);
     }
 
     /**
@@ -243,8 +248,12 @@ class File implements IDriver
      */
     private function decrypt($data, $iv)
     {
-        $tag = 'simple-cache';
+        if (PHP_VERSION_ID >= 70100) {
+            $tag = 'simple-cache';
 
-        return openssl_decrypt($data, 'aes-256-gcm', $this->encryption_key, 0, $iv, $tag);
+            return openssl_decrypt($data, 'aes-256-gcm', $this->encryption_key, 0, $iv, $tag);
+        }
+
+        return openssl_encrypt($data, 'aes-256-gcm', $this->encryption_key, 0, $iv);
     }
 }
