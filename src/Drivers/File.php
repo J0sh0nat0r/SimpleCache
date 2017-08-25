@@ -34,8 +34,8 @@ class File implements IDriver
             }
         }
 
-        if (isset($options['encryption_key'])) {
-            $this->encrypt_data = true;
+        $this->encrypt_data = isset($options['encryption_key']);
+        if ($this->encrypt_data) {
             $this->encryption_key = hash('sha256', $options['encryption_key']);
         }
 
