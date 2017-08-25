@@ -40,6 +40,14 @@ class File implements IDriver
         }
 
         $this->forAll(function ($item) {
+            if (!$this->valid($item)) {
+                unlink($item.'/data.json');
+                unlink($item.'/item.dat');
+                rmdir($item);
+
+                return;
+            }
+
             $data = json_decode(file_get_contents($item.'/data.json'), true);
 
             if ($data['expiry'] > 0 && time() >= $data['expiry']) {
@@ -56,32 +64,23 @@ class File implements IDriver
             mkdir($dir);
         }
 
-        $success = true;
+        $encrypted = $this->encrypt_data;
+        $expiry = $time > 0 ? time() + $time : null;
 
-        try {
-            $expiry = $time > 0 ? time() + $time : null;
+        $item_data = compact('key', 'expiry', 'encrypted');
 
-            $item_data = [
-                'key'       => $key,
-                'expiry'    => $expiry,
-                'encrypted' => $this->encrypt_data,
-            ];
+        if ($encrypted) {
+            $value = $this->encrypt($value, $iv);
 
-            if ($this->encrypt_data) {
-                $value = $this->encrypt($value, $iv);
-
-                if ($value === false) {
-                    throw new \Exception('Failed to encrypt item: '.openssl_error_string());
-                }
-
-                $item_data['iv'] = $iv;
+            if ($value === false) {
+                throw new \Exception('Failed to encrypt item: '.openssl_error_string());
             }
 
-            $success = file_put_contents($dir.'/data.json', json_encode($item_data)) ? $success : false;
-            $success = file_put_contents($dir.'/item.dat', $value) ? $success : false;
-        } catch (\Exception $e) {
-            $success = false;
+            $item_data['iv'] = $iv;
         }
+
+        $success = file_put_contents($dir.'/data.json', json_encode($item_data));
+        $success = file_put_contents($dir.'/item.dat', $value) ? $success : false;
 
         return $success;
     }
@@ -141,15 +140,9 @@ class File implements IDriver
 
         $dir = $this->getDir($key);
 
-        $success = true;
-
-        try {
-            $success = unlink($dir.'/data.json') ? $success : false;
-            $success = unlink($dir.'/item.dat') ? $success : false;
-            $success = rmdir($dir) ? $success : false;
-        } catch (\Exception $e) {
-            $success = false;
-        }
+        $success = unlink($dir.'/data.json');
+        $success = unlink($dir.'/item.dat') ? $success : false;
+        $success = rmdir($dir) ? $success : false;
 
         return $success;
     }
@@ -161,6 +154,25 @@ class File implements IDriver
 
             $this->remove($data['key']);
         });
+    }
+
+    /**
+     * Tests the validity of an item
+     *
+     * @param string $dir Dir of the item who's validity we should check
+     *
+     * @return bool
+     */
+    private function valid($dir)
+    {
+        if (!is_dir($dir)) {
+            return false;
+        }
+
+        $valid = file_exists($dir.'/data.json');
+        $valid = file_exists($dir.'/item.dat') ? $valid : false;
+
+        return $valid;
     }
 
     /**
