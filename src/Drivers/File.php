@@ -55,13 +55,14 @@ class File implements IDriver
         }
 
         $success = true;
+
         try {
             $expiry = $time > 0 ? time() + $time : null;
 
             $item_data = [
                 'key'       => $key,
                 'expiry'    => $expiry,
-                'encrypted' => $this->encrypt_data
+                'encrypted' => $this->encrypt_data,
             ];
 
             if ($this->encrypt_data) {
@@ -134,6 +135,7 @@ class File implements IDriver
         $dir = $this->getDir($key);
 
         $success = true;
+
         try {
             $success = unlink($dir.'/data.json') ? $success : false;
             $success = unlink($dir.'/item.dat') ? $success : false;
@@ -155,7 +157,7 @@ class File implements IDriver
     }
 
     /**
-     * Generates a directory based on an item's key
+     * Generates a directory based on an item's key.
      *
      * @param string $key Key of the item to generate a directory for
      *
@@ -167,7 +169,7 @@ class File implements IDriver
     }
 
     /**
-     * Retrieves an item's data from disk
+     * Retrieves an item's data from disk.
      *
      * @param string $key Key of the item who's data we're retrieving
      *
@@ -185,7 +187,7 @@ class File implements IDriver
     }
 
     /**
-     * Calls callback on each item in the cache
+     * Calls callback on each item in the cache.
      *
      * @param \Closure $callback Callback
      */
@@ -197,10 +199,10 @@ class File implements IDriver
     }
 
     /**
-     * Encrypts a string with the encryption key and provided initialisation vector
+     * Encrypts a string with the encryption key and provided initialisation vector.
      *
      * @param string $data String to encrypt
-     * @param string $iv Encryption initialization vector
+     * @param string $iv   Encryption initialization vector
      *
      * @return string
      */
@@ -212,10 +214,10 @@ class File implements IDriver
     }
 
     /**
-     * Decrypts a string with the encryption key and provided initialisation vector
+     * Decrypts a string with the encryption key and provided initialisation vector.
      *
      * @param string $data String to decrypt
-     * @param string $iv The initialisation vector used to encrypt the item
+     * @param string $iv   The initialisation vector used to encrypt the item
      *
      * @return string
      */
