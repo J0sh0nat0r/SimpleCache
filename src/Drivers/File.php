@@ -29,7 +29,9 @@ class File implements IDriver
 
         $this->dir = rtrim($options['dir'], '/');
         if (!is_dir($this->dir)) {
-            mkdir($this->dir);
+            if (!mkdir($this->dir)) {
+                throw new \Exception('Cache directory does not exist and automatic creation failed');
+            }
         }
 
         if (isset($options['encryption_key'])) {
