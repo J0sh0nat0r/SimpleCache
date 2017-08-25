@@ -23,7 +23,7 @@ class ArrayDriver implements IDriver
     {
         $this->items[$key] = [
             'value'  => $value,
-            'expiry' => $time === 0 ? null : time() + $time,
+            'expiry' => $time > 0 ? time() + $time : null,
         ];
 
         return true;
