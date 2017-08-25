@@ -5,7 +5,7 @@
 
 namespace J0sh0nat0r\SimpleCache\Tests;
 
-use J0sh0nat0r\SimpleCache\Drivers\File;
+use J0sh0nat0r\SimpleCache\Drivers\File as FileDriver;
 
 class EncryptedFileDriverTest extends FileDriverTest
 {
@@ -13,7 +13,7 @@ class EncryptedFileDriverTest extends FileDriverTest
     {
         $this->dir = sys_get_temp_dir().'/simple-cache-test-dir';
 
-        $this->driver = new File([
+        $this->driver = new FileDriver([
             'dir' => $this->dir,
             'encryption_key' => 'Unit Testing'
         ]);

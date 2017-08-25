@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @covers ArrayDriver;
  */
-abstract class IDriverTestCase extends TestCase
+abstract class DriverTestCase extends TestCase
 {
     /**
      * @var \J0sh0nat0r\SimpleCache\IDriver
@@ -21,9 +21,11 @@ abstract class IDriverTestCase extends TestCase
 
     public function tearDown()
     {
-        $this->driver->clear();
+        if (!is_null($this->driver)) {
+            $this->driver->clear();
 
-        $this->driver = null;
+            $this->driver = null;
+        }
     }
 
     public function testSet()

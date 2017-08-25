@@ -7,7 +7,7 @@ namespace J0sh0nat0r\SimpleCache\Tests;
 
 use J0sh0nat0r\SimpleCache\Drivers\ArrayDriver;
 
-class ArrayDriverTest extends IDriverTestCase
+class ArrayDriverTest extends DriverTestCase
 {
     public function setUp()
     {
