@@ -15,7 +15,7 @@ class EncryptedFileDriverTest extends FileDriverTest
 
         $this->driver = new File([
             'dir' => $this->dir,
-            'encryption_key' => sha1(openssl_random_pseudo_bytes(40))
+            'encryption_key' => 'Unit Testing'
         ]);
     }
 
