@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 class ArrayDriverTest extends TestCase
 {
     /**
-     * @var  ArrayDriver $driver
+     * @var ArrayDriver
      */
     private $driver;
 
@@ -27,28 +27,68 @@ class ArrayDriverTest extends TestCase
         $this->driver = null;
     }
 
-    public function testSetSucceeds()
+    public function testSet()
     {
-        $this->assertTrue($this->driver->set('testing', 'testing', 0));
+        $this->assertTrue($this->driver->set('foo', 'bar', 0));
     }
 
-    public function testHasReturnsFalse()
+    /**
+     * @depends testSet
+     */
+    public function testHas()
     {
-        $this->assertFalse($this->driver->has('testing'));
+        $this->assertFalse($this->driver->has('foo'));
+
+        $this->driver->set('foo', 'bar', 0);
+
+        $this->assertTrue($this->driver->has('foo'));
     }
 
-    public function testGetReturnsNull()
+    /**
+     * @depends testSet
+     */
+    public function testGet()
     {
-        $this->assertNull($this->driver->get('testing'));
+        $this->driver->set('foo', 'bar', 0);
+
+        $this->assertEquals('bar', $this->driver->get('foo'));
+        $this->assertNull($this->driver->get('baz'));
     }
 
-    public function testRemoveSucceeds()
+    /**
+     * @depends testSet, testHas
+     */
+    public function testRemove()
     {
-        $this->assertTrue($this->driver->remove('testing'));
+        $this->driver->set('foo', 'bar', 0);
+
+        $this->assertTrue($this->driver->remove('foo'));
+        $this->assertFalse($this->driver->has('foo'));
     }
 
-    public function testClearSucceeds()
+    /**
+     * @depends testSet, testHas
+     */
+    public function testClear()
     {
-        $this->assertTrue($this->driver->clear());
+        $this->driver->set('foo', 'bar', 0);
+        $this->driver->set('baz', 'qux', 0);
+
+        $this->driver->clear();
+
+        $this->assertFalse($this->driver->has('foo'));
+        $this->assertFalse($this->driver->has('baz'));
+    }
+
+    /**
+     * @depends testSet, testHas
+     */
+    public function testItemExpiration()
+    {
+        $this->driver->set('foo', 'bar', 5);
+
+        sleep(6);
+
+        $this->assertFalse($this->driver->has('foo'));
     }
 }
