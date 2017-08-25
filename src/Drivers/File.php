@@ -116,6 +116,10 @@ class File implements IDriver
             }
 
             $value = $this->decrypt($value, $data['iv']);
+
+            if ($value === false) {
+                throw new \Exception('Failed to decrypt item: '.openssl_error_string());
+            }
         }
 
         return $value;
