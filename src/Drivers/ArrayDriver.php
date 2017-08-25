@@ -51,7 +51,7 @@ class ArrayDriver implements IDriver
     public function get($key)
     {
         if ($this->has($key)) {
-            return $this->items[$key];
+            return $this->items[$key]['value'];
         }
 
         return null;
