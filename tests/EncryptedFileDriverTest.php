@@ -11,7 +11,7 @@ class EncryptedFileDriverTest extends FileDriverTest
 {
     public function setUp()
     {
-        $this->dir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'simple-cache-test-dir';
+        $this->dir = sys_get_temp_dir().'/simple-cache-test-dir';
 
         $this->driver = new File([
             'dir' => $this->dir,
@@ -23,7 +23,7 @@ class EncryptedFileDriverTest extends FileDriverTest
     {
         $this->driver->set('foo', 'bar', 0);
 
-        $output = file_get_contents($this->dir.DIRECTORY_SEPARATOR.sha1('foo').'item.dat');
+        $output = file_get_contents($this->dir.'/'.sha1('foo').'/item.dat');
 
         $this->assertNotContains('foo', $output, 'The data was not encrypted and appeared in item.dat');
     }

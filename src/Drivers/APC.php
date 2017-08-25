@@ -16,18 +16,18 @@ use J0sh0nat0r\SimpleCache\IDriver;
 class APC implements IDriver
 {
     /**
-     * @var string APC prefix (apc_ or apcu_)
+     * @var string APC prefix (apcu_ or apc_)
      */
     private $prefix;
 
     public function __construct()
     {
-        if (extension_loaded('apc')) {
-            $this->prefix = 'apc_';
-        } elseif (extension_loaded('apcu')) {
+        if (extension_loaded('apcu')) {
             $this->prefix = 'apcu_';
+        } elseif (extension_loaded('apc')) {
+            $this->prefix = 'apc_';
         } else {
-            throw new DriverOptionsInvalidException('SimpleCache APC driver requires APC or APCu');
+            throw new DriverOptionsInvalidException('This driver requires APC or APCu');
         }
     }
 

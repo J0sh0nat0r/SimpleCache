@@ -13,7 +13,7 @@ class FileDriverTest extends IDriverTestCase
 
     public function setUp()
     {
-        $this->dir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'simple-cache-test-dir';
+        $this->dir = sys_get_temp_dir().'/simple-cache-test-dir';
 
         $this->driver = new File([
             'dir' => $this->dir
