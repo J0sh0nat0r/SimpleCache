@@ -34,7 +34,7 @@ class File implements IDriver
 
         if (isset($options['encryption_key'])) {
             $this->encrypt_data = true;
-            $this->encryption_key = $options['encryption_key'];
+            $this->encryption_key = hash('sha256', $options['encryption_key']);
         }
 
         $this->forAll(function ($item) {
@@ -66,6 +66,11 @@ class File implements IDriver
 
             if ($this->encrypt_data) {
                 $value = $this->encrypt($value, $iv);
+
+                if ($value === false) {
+                    throw new \Exception('Failed to encrypt item: '.openssl_error_string());
+                }
+
                 $item_data['iv'] = $iv;
             }
 
