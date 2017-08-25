@@ -230,6 +230,7 @@ class File implements IDriver
     private function decrypt($data, $iv)
     {
         $tag = 'simple-cache';
+
         return openssl_decrypt($data, 'aes-256-gcm', $this->encryption_key, 0, $iv, $tag);
     }
 }
