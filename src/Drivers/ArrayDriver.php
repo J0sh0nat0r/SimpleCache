@@ -21,7 +21,7 @@ class ArrayDriver implements IDriver
 
     public function set($key, $value, $time)
     {
-        $items[$key] = [
+        $this->items[$key] = [
             'value'  => $value,
             'expiry' => $time === 0 ? null : time() + $time,
         ];
