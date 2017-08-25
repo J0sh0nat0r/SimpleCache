@@ -20,7 +20,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "J0sh0nat0r\\SimpleCache\\Tests": "tests/"
+      "J0sh0nat0r\\SimpleCache\\Tests\\": "tests/"
     }
   },
   "require-dev": {
