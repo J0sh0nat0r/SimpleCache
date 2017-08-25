@@ -38,7 +38,7 @@ class ArrayDriver implements IDriver
         $item = $this->items[$key];
 
         if (!is_null($item['expiry'])) {
-            if ($item['expiry'] < time()) {
+            if ($item['expiry'] <= time()) {
                 $this->remove($key);
 
                 return false;
@@ -51,8 +51,10 @@ class ArrayDriver implements IDriver
     public function get($key)
     {
         if ($this->has($key)) {
-            $this->items[$key];
+            return $this->items[$key];
         }
+
+        return null;
     }
 
     public function remove($key)
