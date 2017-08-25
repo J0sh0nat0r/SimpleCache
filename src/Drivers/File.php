@@ -157,7 +157,7 @@ class File implements IDriver
     }
 
     /**
-     * Tests the validity of an item
+     * Tests the validity of an item.
      *
      * @param string $dir Dir of the item who's validity we should check
      *
