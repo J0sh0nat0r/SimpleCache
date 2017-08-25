@@ -111,7 +111,7 @@ class File implements IDriver
         }
 
         if ($data['encrypted']) {
-            if ($this->encrypt_data) {
+            if (!$this->encrypt_data) {
                 throw new \Exception('Item is encrypted but no encryption key was provided');
             }
 
