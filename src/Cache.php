@@ -13,22 +13,39 @@ use J0sh0nat0r\SimpleCache\Internal\PCI;
 class Cache
 {
     /**
-     *  @var  int  Default storage time for cache items
+     * The default storage time for cache items.
+     *
+     * @var int
      */
     public static $DEFAULT_TIME = 3600;
 
     /**
-     * @var PCI Provides a Property based Cache Interface (PCI)
+     * If set to true values that are fetched / stored during the
+     * request will be remembered for the duration of the request.
+     *
+     * @var bool
+     */
+    public $remember_values = true;
+
+    /**
+     * Provides a Property based Cache Interface (or PCI) an
+     * alternative (albeit more limited) way to access cache items.
+     *
+     * @var PCI
      */
     public $items;
 
     /**
-     * @var IDriver The driver
+     * The driver instance.
+     *
+     * @var IDriver
      */
     private $driver;
 
     /**
-     * @var array Array containing items that have previously been loaded
+     * Array containing items that have previously been loaded.
+     *
+     * @var array
      */
     private $loaded = [];
 
@@ -37,16 +54,23 @@ class Cache
      *
      * @param string     $driver         The driver to use
      * @param null|array $driver_options Options to pass to the driver
+     *
+     * @throws \Exception
      */
     public function __construct($driver, $driver_options = null)
     {
-        if (!is_null($driver_options)) {
-            $this->driver = new $driver($driver_options);
-        } else {
+        $this->items = new PCI($this);
+
+        if (is_null($driver_options)) {
             $this->driver = new $driver();
+            return;
         }
 
-        $this->items = new PCI($this);
+        if (!is_array($driver_options)) {
+            throw new \Exception('The `driver_options` argument must be either null or an array');
+        }
+
+        $this->driver = new $driver($driver_options);
     }
 
     /**
@@ -68,12 +92,12 @@ class Cache
             $time = is_null($value) ? $time : $value;
             $values = $key;
 
-            $success = [];
+            $successes = [];
             foreach ($values as $key => $value) {
-                $success[$key] = $this->store($key, $value, $time);
+                $successes[$key] = $this->store($key, $value, $time);
             }
 
-            return $success;
+            return $successes;
         }
 
         if (!is_int($time)) {
@@ -82,13 +106,11 @@ class Cache
 
         $success = $this->driver->set($key, serialize($value), $time);
 
-        if ($success) {
+        if ($success && $this->remember_values) {
             $this->loaded[$key] = $value;
-
-            return true;
         }
 
-        return false;
+        return $success;
     }
 
     /**
@@ -171,8 +193,8 @@ class Cache
     {
         if (is_array($key)) {
             $keys = $key;
-            $results = [];
 
+            $results = [];
             foreach ($keys as $key) {
                 $results[$key] = $this->get($key, $default);
             }
@@ -180,7 +202,7 @@ class Cache
             return $results;
         }
 
-        if (isset($this->loaded[$key])) {
+        if ($this->remember_values && isset($this->loaded[$key])) {
             return $this->loaded[$key];
         }
 
@@ -194,7 +216,13 @@ class Cache
             return $default;
         }
 
-        return unserialize($result);
+        $result = unserialize($result);
+
+        if ($this->remember_values) {
+            $this->loaded[$key] = $result;
+        }
+
+        return $result;
     }
 
     /**
@@ -207,11 +235,11 @@ class Cache
      */
     public function pull($key, $default = null)
     {
-        $value = $this->get($key, $default);
+        $result = $this->get($key, $default);
 
         $this->remove($key);
 
-        return $value;
+        return $result;
     }
 
     /**
@@ -226,12 +254,12 @@ class Cache
         if (is_array($key)) {
             $keys = $key;
 
-            $success = [];
+            $successes = [];
             foreach ($keys as $key) {
-                $success[$key] = $this->remove($key);
+                $successes[$key] = $this->remove($key);
             }
 
-            return $success;
+            return $successes;
         }
 
         if (isset($this->loaded[$key])) {
