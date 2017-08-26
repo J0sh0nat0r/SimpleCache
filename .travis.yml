@@ -5,15 +5,13 @@ matrix:
     - php: '5.6'
       env: INSTALL_APCU=true
     - php: '7.0'
-      env: INSTALL_APCU=false
     - php: '7.1'
-      env: INSTALL_APCU=false
 
 before_install:
   - echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 install:
-  - if [ $INSTALL_APCU ] then yes n | pecl install -f apcu-4.0.11 fi
+  - if [[ -v $INSTALL_APCU ]]; then yes n | pecl install -f apcu-4.0.11 fi
   - composer install --prefer-dist
 
 before_script:
