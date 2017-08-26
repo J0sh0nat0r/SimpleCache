@@ -81,7 +81,13 @@ class Memcached implements IDriver
 
     public function get($key)
     {
-        return $this->pool->get($key);
+        $result = $this->pool->get($key);
+
+        if ($result === false) {
+            return null;
+        }
+
+        return $result;
     }
 
     public function remove($key)
