@@ -13,7 +13,7 @@ use J0sh0nat0r\SimpleCache\IDriver;
  *
  *
  * Accepted options:
- * servers - array of servers
+ * servers: Array of servers
  */
 class Memcached implements IDriver
 {
@@ -28,16 +28,32 @@ class Memcached implements IDriver
     {
         $this->pool = new \Memcached();
 
-        if (!isset($options['servers'])) {
-            throw new DriverOptionsInvalidException('Please provide at least 1 server to the SimpleCache memcached driver');
+        if (!isset($options['servers']) || !is_array($options['servers'])) {
+            throw new DriverOptionsInvalidException('Please provide at least 1 server to the driver');
         }
 
         foreach ($options['servers'] as $server) {
-            if (!(isset($server['host']) || !isset($server['port']))) {
-                throw new DriverOptionsInvalidException('Missing host or port for SimpleCache Memcached server');
+            if (!is_array($server)) {
+                throw new DriverOptionsInvalidException('Each server must be an array');
             }
 
-            $this->pool->addServer($server['host'], $server['port']);
+            if (!isset($server['host'])) {
+                throw new DriverOptionsInvalidException('The host option is required for each server');
+            }
+
+            $server['port'] = isset($server['port']) ? $server['port'] : 11211;
+
+            if (!is_numeric($server['port'])) {
+                throw new DriverOptionsInvalidException('Server port option must be numeric');
+            }
+
+            $server['weight'] = isset($server['weight']) ? $server['weight'] : 0;
+
+            if (!is_numeric($server['weight'])) {
+                throw new DriverOptionsInvalidException('Server weight option must be numeric');
+            }
+
+            $this->pool->addServer($server['host'], $server['port'], $server['weight']);
         }
     }
 
