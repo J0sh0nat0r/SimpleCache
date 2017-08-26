@@ -21,11 +21,9 @@ abstract class DriverTestCase extends TestCase
 
     public function tearDown()
     {
-        if (!is_null($this->driver)) {
-            $this->driver->clear();
+        $this->driver->clear();
 
-            unset($this->driver);
-        }
+        unset($this->driver);
     }
 
     public function testSet()
@@ -40,7 +38,7 @@ abstract class DriverTestCase extends TestCase
     {
         $this->assertFalse($this->driver->has('foo'));
 
-        $this->driver->set('foo', 'bar', 0);
+        $this->assertTrue($this->driver->set('foo', 'bar', 0));
 
         $this->assertTrue($this->driver->has('foo'));
     }
@@ -57,7 +55,8 @@ abstract class DriverTestCase extends TestCase
     }
 
     /**
-     * @depends testSet, testHas
+     * @depends testSet
+     * @depends testHas
      */
     public function testRemove()
     {
@@ -68,7 +67,8 @@ abstract class DriverTestCase extends TestCase
     }
 
     /**
-     * @depends testSet, testHas
+     * @depends testSet
+     * @depends testHas
      */
     public function testClear()
     {
@@ -82,7 +82,8 @@ abstract class DriverTestCase extends TestCase
     }
 
     /**
-     * @depends testSet, testHas
+     * @depends testSet
+     * @depends testHas
      */
     public function testItemExpiration()
     {

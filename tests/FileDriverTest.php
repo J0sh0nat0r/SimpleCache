@@ -19,11 +19,4 @@ class FileDriverTest extends DriverTestCase
             'dir' => $this->dir
         ]);
     }
-
-    public function tearDown()
-    {
-        parent::tearDown();
-
-        rmdir($this->dir);
-    }
 }

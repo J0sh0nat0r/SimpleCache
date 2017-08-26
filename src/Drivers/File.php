@@ -36,21 +36,24 @@ class File implements IDriver
 
         $this->encrypt_data = isset($options['encryption_key']);
         if ($this->encrypt_data) {
-            $this->encryption_key = hash('sha256', $options['encryption_key']);
+            $this->encryption_key = md5($options['encryption_key']);
         }
 
         $this->forAll(function ($item) {
-            if (!$this->valid($item)) {
-                unlink($item.'/data.json');
-                unlink($item.'/item.dat');
-                rmdir($item);
+            if (!$this->isValid($item)) {
+                @unlink($item.'/data.json');
+                @unlink($item.'/item.dat');
+
+                if (!rmdir($item)) {
+                    throw new \Exception('Failed to remove invalid item! Please manually delete: '.$item);
+                }
 
                 return;
             }
 
             $data = json_decode(file_get_contents($item.'/data.json'), true);
 
-            if ($data['expiry'] > 0 && time() >= $data['expiry']) {
+            if ($this->expired($data['key'])) {
                 $this->remove($data['key']);
             }
         });
@@ -70,35 +73,38 @@ class File implements IDriver
         $item_data = compact('key', 'expiry', 'encrypted');
 
         if ($encrypted) {
-            $value = $this->encrypt($value, $iv);
+            $value = $this->encrypt($value, $iv, $tag);
 
             if ($value === false) {
                 throw new \Exception('Failed to encrypt item: '.openssl_error_string());
             }
 
             $item_data['iv'] = $iv;
+            $item_data['tag'] = $tag;
+        }
+
+        if ($this->has($key)) {
+            if (!$this->remove($key)) {
+                throw new \Exception('Failed to remove pre-existing version of an item with the key: '.$key);
+            }
         }
 
         $success = file_put_contents($dir.'/data.json', json_encode($item_data));
         $success = file_put_contents($dir.'/item.dat', $value) ? $success : false;
 
-        return $success !== false;
+        return boolval($success);
     }
 
     public function has($key)
     {
-        $data = $this->getData($key);
+        $dir = $this->getDir($key);
 
-        if (is_null($data)) {
+        if (!$this->isValid($dir)) {
             return false;
         }
 
-        if (!is_null($data['expiry'])) {
-            if ($data['expiry'] <= time()) {
-                $this->remove($key);
-
-                return false;
-            }
+        if ($this->expired($key)) {
+            return false;
         }
 
         return true;
@@ -111,6 +117,7 @@ class File implements IDriver
         }
 
         $data = $this->getData($key);
+
         $value = file_get_contents($this->getDir($key).'/item.dat');
 
         if ($value === false) {
@@ -122,7 +129,7 @@ class File implements IDriver
                 throw new \Exception('Item is encrypted but no encryption key was provided');
             }
 
-            $value = $this->decrypt($value, $data['iv']);
+            $value = $this->decrypt($value, $data['iv'], $data['tag']);
 
             if ($value === false) {
                 throw new \Exception('Failed to decrypt item: '.openssl_error_string());
@@ -134,17 +141,12 @@ class File implements IDriver
 
     public function remove($key)
     {
-        if (!$this->has($key)) {
-            return true;
-        }
-
         $dir = $this->getDir($key);
 
-        $success = unlink($dir.'/data.json');
-        $success = unlink($dir.'/item.dat') ? $success : false;
-        $success = rmdir($dir) ? $success : false;
+        @unlink($dir.'/data.json');
+        @unlink($dir.'/item.dat');
 
-        return $success !== false;
+        return rmdir($dir);
     }
 
     public function clear()
@@ -154,25 +156,6 @@ class File implements IDriver
 
             $this->remove($data['key']);
         });
-    }
-
-    /**
-     * Tests the validity of an item.
-     *
-     * @param string $dir Dir of the item who's validity we should check
-     *
-     * @return bool
-     */
-    private function valid($dir)
-    {
-        if (!is_dir($dir)) {
-            return false;
-        }
-
-        $valid = file_exists($dir.'/data.json');
-        $valid = file_exists($dir.'/item.dat') ? $valid : false;
-
-        return $valid;
     }
 
     /**
@@ -188,6 +171,25 @@ class File implements IDriver
     }
 
     /**
+     * Tests the validity of an item.
+     *
+     * @param string $dir Dir of the item who's validity we should check
+     *
+     * @return bool
+     */
+    private function isValid($dir)
+    {
+        if (!is_dir($dir)) {
+            return false;
+        }
+
+        $valid = file_exists($dir.'/data.json');
+        $valid = file_exists($dir.'/item.dat') ? $valid : false;
+
+        return $valid;
+    }
+
+    /**
      * Retrieves an item's data from disk.
      *
      * @param string $key Key of the item who's data we're retrieving
@@ -198,7 +200,7 @@ class File implements IDriver
     {
         $dir = $this->getDir($key);
 
-        if (!is_dir($dir)) {
+        if (!$this->isValid($dir)) {
             return null;
         }
 
@@ -218,21 +220,44 @@ class File implements IDriver
     }
 
     /**
+     * Checks if an item is expired
+     *
+     * @param string $key Key of the item to check
+     *
+     * @return bool True if the item is expired, otherwise, false
+     */
+    private function expired($key)
+    {
+        $data = $this->getData($key);
+
+        if (!is_null($data['expiry'])) {
+            if ($data['expiry'] <= time()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Encrypts a string with the encryption key and provided initialisation vector.
      *
      * @param string $data String to encrypt
      * @param string $iv   Encryption initialization vector
+     * @param string $tag Tag for encryption with (Required on PHP 7.1+)
      *
      * @return string
      */
-    private function encrypt($data, &$iv)
+    private function encrypt($data, &$iv, &$tag = null)
     {
         $iv = bin2hex(openssl_random_pseudo_bytes(6));
 
         if (PHP_VERSION_ID >= 70100) {
-            $tag = 'simple-cache';
+            $result = openssl_encrypt($data, 'aes-256-gcm', $this->encryption_key, 0, $iv, $tag);
 
-            return openssl_encrypt($data, 'aes-256-gcm', $this->encryption_key, 0, $iv, $tag);
+            $tag = base64_encode($tag);
+
+            return $result;
         }
 
         return openssl_encrypt($data, 'aes-256-gcm', $this->encryption_key, 0, $iv);
@@ -243,17 +268,18 @@ class File implements IDriver
      *
      * @param string $data String to decrypt
      * @param string $iv   The initialisation vector used to encrypt the item
+     * @param string $tag Base64 encoded tag of the item (Required on PHP 7.1+)
      *
      * @return string
      */
-    private function decrypt($data, $iv)
+    private function decrypt($data, $iv, $tag = null)
     {
         if (PHP_VERSION_ID >= 70100) {
-            $tag = 'simple-cache';
+            $tag = base64_decode($tag);
 
-            return openssl_decrypt($data, 'aes-256-gcm', $this->encryption_key, 0, $iv, $tag);
+            return openssl_decrypt(base64_decode($data), 'aes-256-gcm', $this->encryption_key, 1, $iv, $tag);
         }
 
-        return openssl_decrypt($data, 'aes-256-gcm', $this->encryption_key, 0, $iv);
+        return openssl_decrypt($data, 'aes-256-gcm', $this->encryption_key, 1, $iv);
     }
 }
