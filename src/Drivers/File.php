@@ -280,6 +280,6 @@ class File implements IDriver
             return openssl_decrypt(base64_decode($data), 'aes-256-gcm', $this->encryption_key, 1, $iv, $tag);
         }
 
-        return openssl_decrypt($data, 'aes-256-gcm', $this->encryption_key, 1, $iv);
+        return openssl_decrypt($data, 'aes-256-gcm', $this->encryption_key, 0, $iv);
     }
 }
