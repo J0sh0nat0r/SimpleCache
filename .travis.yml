@@ -11,7 +11,7 @@ before_install:
   - echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 install:
-  - if [[ -v $INSTALL_APCU ]]; then yes n | pecl install -f apcu-4.0.11 fi
+  - if [[ -v $INSTALL_APCU ]]; then yes n | pecl install -f apcu-4.0.11; fi
   - composer install --prefer-dist
 
 before_script:
