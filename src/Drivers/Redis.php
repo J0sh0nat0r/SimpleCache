@@ -68,15 +68,18 @@ class Redis implements IDriver
 
     public function get($key)
     {
-        return $this->redis->get($key);
+        $value = $this->redis->get($key);
+
+        if ($value === false) {
+            return null;
+        }
+
+        return $value;
     }
 
     public function remove($key)
     {
-        // Every deletion in Redis is a successful deletion... I hope
-        $this->redis->delete($key);
-
-        return true;
+        return $this->redis->del($key) === 1;
     }
 
     public function clear()
