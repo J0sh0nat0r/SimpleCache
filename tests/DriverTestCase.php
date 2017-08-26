@@ -24,7 +24,7 @@ abstract class DriverTestCase extends TestCase
         if (!is_null($this->driver)) {
             $this->driver->clear();
 
-            $this->driver = null;
+            unset($this->driver);
         }
     }
 
