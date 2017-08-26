@@ -65,7 +65,9 @@ class Memcached implements IDriver
 
     public function set($key, $value, $time)
     {
-        return $this->pool->set($key, $value, $time);
+        $expiration = $time > 0 ? time() + $time : 0;
+
+        return $this->pool->set($key, $value, $expiration);
     }
 
     public function has($key)
