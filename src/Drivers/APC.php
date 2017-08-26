@@ -33,19 +33,24 @@ class APC implements IDriver
 
     public function set($key, $value, $time)
     {
-        return ($this->prefix.'store')($key, $value, $time);
+        $function = $this->prefix.'store';
+
+        return $function($key, $value, $time);
     }
 
     public function has($key)
     {
-        return ($this->prefix.'exists')($key);
+        $function = $this->prefix.'exists';
+
+        return $function($key);
     }
 
     public function get($key)
     {
-        $success = false;
+        $function = $this->prefix.'fetch';
 
-        $result = ($this->prefix.'fetch')($key, $success);
+        $success = false;
+        $result = $function($key, $success);
 
         if (!$success) {
             return null;
@@ -56,7 +61,9 @@ class APC implements IDriver
 
     public function remove($key)
     {
-        return ($this->prefix.'delete')($key);
+        $function = $this->prefix.'delete';
+
+        return $function($key);
     }
 
     public function clear()
