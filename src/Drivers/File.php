@@ -36,7 +36,7 @@ class File implements IDriver
 
         $this->encrypt_data = isset($options['encryption_key']);
         if ($this->encrypt_data) {
-            $this->encryption_key = md5($options['encryption_key']);
+            $this->encryption_key = hash('sha256', $options['encryption_key']);
         }
 
         $this->forAll(function ($item) {
@@ -73,14 +73,13 @@ class File implements IDriver
         $item_data = compact('key', 'expiry', 'encrypted');
 
         if ($encrypted) {
-            $value = $this->encrypt($value, $iv, $tag);
+            $value = $this->encrypt($value, $iv);
 
             if ($value === false) {
                 throw new \Exception('Failed to encrypt item: '.openssl_error_string());
             }
 
             $item_data['iv'] = $iv;
-            $item_data['tag'] = $tag;
         }
 
         if ($this->has($key)) {
@@ -129,7 +128,7 @@ class File implements IDriver
                 throw new \Exception('Item is encrypted but no encryption key was provided');
             }
 
-            $value = $this->decrypt($value, $data['iv'], $data['tag']);
+            $value = $this->decrypt($value, $data['iv']);
 
             if ($value === false) {
                 throw new \Exception('Failed to decrypt item: '.openssl_error_string());
@@ -243,24 +242,15 @@ class File implements IDriver
      * Encrypts a string with the encryption key and provided initialisation vector.
      *
      * @param string $data String to encrypt
-     * @param string $iv   Encryption initialization vector
-     * @param string $tag  Tag for encryption with (Required on PHP 7.1+)
+     * @param string $iv Encryption initialization vector (out)
      *
      * @return string
      */
-    private function encrypt($data, &$iv, &$tag = null)
+    private function encrypt($data, &$iv)
     {
-        $iv = bin2hex(openssl_random_pseudo_bytes(6));
+        $iv = bin2hex(openssl_random_pseudo_bytes(8));
 
-        if (PHP_VERSION_ID >= 70100) {
-            $result = openssl_encrypt($data, 'aes-256-gcm', $this->encryption_key, 0, $iv, $tag);
-
-            $tag = base64_encode($tag);
-
-            return $result;
-        }
-
-        return openssl_encrypt($data, 'aes-256-gcm', $this->encryption_key, 0, $iv);
+        return openssl_encrypt($data, 'aes-256-cbc', $this->encryption_key, 0, $iv);
     }
 
     /**
@@ -268,18 +258,11 @@ class File implements IDriver
      *
      * @param string $data String to decrypt
      * @param string $iv   The initialisation vector used to encrypt the item
-     * @param string $tag  Base64 encoded tag of the item (Required on PHP 7.1+)
      *
      * @return string
      */
-    private function decrypt($data, $iv, $tag = null)
+    private function decrypt($data, $iv)
     {
-        if (PHP_VERSION_ID >= 70100) {
-            $tag = base64_decode($tag);
-
-            return openssl_decrypt(base64_decode($data), 'aes-256-gcm', $this->encryption_key, 0, $iv, $tag);
-        }
-
-        return openssl_decrypt($data, 'aes-256-gcm', $this->encryption_key, 0, $iv);
+        return openssl_decrypt($data, 'aes-256-cbc', $this->encryption_key, 0, $iv);
     }
 }
