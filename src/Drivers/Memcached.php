@@ -29,7 +29,13 @@ class Memcached implements IDriver
         $this->pool = new \Memcached();
 
         if (!isset($options['servers']) || !is_array($options['servers'])) {
-            throw new DriverOptionsInvalidException('Please provide at least 1 server to the driver');
+            if (!isset($options['host'])) {
+                throw new DriverOptionsInvalidException('Please provide at least 1 server to the driver');
+            }
+
+            $options = [
+                'servers' => [$options]
+            ];
         }
 
         foreach ($options['servers'] as $server) {
