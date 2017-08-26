@@ -242,7 +242,7 @@ class File implements IDriver
      * Encrypts a string with the encryption key and provided initialisation vector.
      *
      * @param string $data String to encrypt
-     * @param string $iv Encryption initialization vector (out)
+     * @param string $iv   Encryption initialization vector (out)
      *
      * @return string
      */
