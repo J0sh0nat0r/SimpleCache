@@ -82,7 +82,7 @@ class File implements IDriver
         $success = file_put_contents($dir.'/data.json', json_encode($item_data));
         $success = file_put_contents($dir.'/item.dat', $value) ? $success : false;
 
-        return $success;
+        return $success !== false;
     }
 
     public function has($key)
@@ -144,7 +144,7 @@ class File implements IDriver
         $success = unlink($dir.'/item.dat') ? $success : false;
         $success = rmdir($dir) ? $success : false;
 
-        return $success;
+        return $success !== false;
     }
 
     public function clear()
