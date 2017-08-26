@@ -12,13 +12,31 @@ use J0sh0nat0r\SimpleCache\IDriver;
  * File driver.
  *
  * Accepted options:
- * dir -            The directory to store cache files in
- * encryption_key - The key to use for encrypting data, if not set data will NOT be encrypted
+ * dir:            (required) The directory to store cache files in
+ * encryption_key: (optional) The key to use for encrypting data, if not set data will NOT be encrypted
  */
 class File implements IDriver
 {
+    /**
+     * Directory in which to store items.
+     *
+     * @var string
+     */
     private $dir;
+
+    /**
+     * Determines whether or not to encrypt item data,
+     * basically a shortcut for `!empty($this->encryption_key).
+     *
+     * @var bool
+     */
     private $encrypt_data;
+
+    /**
+     * Key to use when encrypting item data.
+     *
+     * @var string
+     */
     private $encryption_key;
 
     public function __construct($options)

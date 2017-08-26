@@ -17,6 +17,11 @@ use J0sh0nat0r\SimpleCache\IDriver;
  */
 class Memcached implements IDriver
 {
+    /**
+     * Pool of Memcache servers (instance of \Memcached)
+     *
+     * @var \Memcached
+     */
     private $pool;
 
     public function __construct($options)

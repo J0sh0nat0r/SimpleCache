@@ -12,13 +12,15 @@ use J0sh0nat0r\SimpleCache\IDriver;
  * Redis driver.
  *
  * Accepted options:
- * host - redis server host
- * port - (optional) redis server port
- * password - (optional) redis server password
+ * host:     (required) Redis server host
+ * port:     (optional) Redis server port
+ * password: (optional) Redis server password
  */
 class Redis implements IDriver
 {
     /**
+     * Redis server connection.
+     *
      * @var \Redis
      */
     private $redis;

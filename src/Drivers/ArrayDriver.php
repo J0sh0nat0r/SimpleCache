@@ -15,6 +15,8 @@ use J0sh0nat0r\SimpleCache\IDriver;
 class ArrayDriver implements IDriver
 {
     /**
+     * Array containing stored items.
+     *
      * @var array[]
      */
     private $items;

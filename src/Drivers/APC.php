@@ -16,7 +16,9 @@ use J0sh0nat0r\SimpleCache\IDriver;
 class APC implements IDriver
 {
     /**
-     * @var string APC prefix (apcu_ or apc_)
+     * APC prefix (apcu_ or apc_).
+     *
+     * @var string
      */
     private $prefix;
 
