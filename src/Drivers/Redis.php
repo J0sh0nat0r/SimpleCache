@@ -33,7 +33,7 @@ class Redis implements IDriver
 
         $this->redis = new \Redis();
 
-        $connected = $this->redis->connect($server['host'], isset($server['port']) ? $server['port'] : null);
+        $connected = $this->redis->connect($server['host'], isset($server['port']) ? $server['port'] : 6379);
 
         if (!$connected) {
             throw new \Exception('Failed to connect to Redis: '.$this->redis->getLastError());
