@@ -11,8 +11,6 @@ class APCDriverTest extends DriverTestCase
 {
     public function setUp()
     {
-        $this->iniSet('apc.enable_cli', 1);
-
         $this->driver = new APCDriver();
     }
 }

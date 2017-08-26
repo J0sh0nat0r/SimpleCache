@@ -8,7 +8,7 @@ matrix:
     - php: '7.1'
 
 before_install:
-  - echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - phpenv config-add travis.ini
 
 install:
   - if [[ -v $INSTALL_APCU ]]; then yes | pecl install -f apcu-4.0.11; fi
