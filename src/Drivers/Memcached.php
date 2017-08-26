@@ -70,7 +70,13 @@ class Memcached implements IDriver
 
     public function has($key)
     {
-        return array_search($key, $this->pool->getAllKeys()) !== false;
+        $keys = $this->pool->getAllKeys();
+
+        if (!is_array($keys)) {
+            return false;
+        }
+
+        return array_search($key, $keys) !== false;
     }
 
     public function get($key)
