@@ -58,7 +58,7 @@ class Redis implements IDriver
 
     public function set($key, $value, $time)
     {
-        $this->redis->set($key, $value, $time);
+        return $this->redis->set($key, $value, $time);
     }
 
     public function has($key)
