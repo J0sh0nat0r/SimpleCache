@@ -9,8 +9,6 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Tests a driver
- *
- * @covers ArrayDriver;
  */
 abstract class DriverTestCase extends TestCase
 {

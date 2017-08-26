@@ -7,6 +7,11 @@ namespace J0sh0nat0r\SimpleCache\Tests;
 
 use J0sh0nat0r\SimpleCache\Drivers\APC as APCDriver;
 
+/**
+ * Tests the APC driver.
+ *
+ * @covers APCDriver
+ */
 class APCDriverTest extends DriverTestCase
 {
     public function setUp()

@@ -7,6 +7,9 @@ namespace J0sh0nat0r\SimpleCache\Tests;
 
 use J0sh0nat0r\SimpleCache\Drivers\File as FileDriver;
 
+/**
+ * Tests teh file driver with encryption enabled.
+ */
 class EncryptedFileDriverTest extends FileDriverTest
 {
     public function setUp()

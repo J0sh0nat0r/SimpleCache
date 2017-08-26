@@ -7,6 +7,11 @@ namespace J0sh0nat0r\SimpleCache\Tests;
 
 use J0sh0nat0r\SimpleCache\Drivers\File as FileDriver;
 
+/**
+ * Tests the File driver.
+ *
+ * @covers FileDriver
+ */
 class FileDriverTest extends DriverTestCase
 {
     protected $dir;
