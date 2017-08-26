@@ -13,6 +13,8 @@ use PHPUnit\Framework\TestCase;
 abstract class DriverTestCase extends TestCase
 {
     /**
+     * An instance of the driver to test.
+     *
      * @var \J0sh0nat0r\SimpleCache\IDriver
      */
     protected $driver;
