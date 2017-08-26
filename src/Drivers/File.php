@@ -220,7 +220,7 @@ class File implements IDriver
     }
 
     /**
-     * Checks if an item is expired
+     * Checks if an item is expired.
      *
      * @param string $key Key of the item to check
      *
@@ -244,7 +244,7 @@ class File implements IDriver
      *
      * @param string $data String to encrypt
      * @param string $iv   Encryption initialization vector
-     * @param string $tag Tag for encryption with (Required on PHP 7.1+)
+     * @param string $tag  Tag for encryption with (Required on PHP 7.1+)
      *
      * @return string
      */
@@ -268,7 +268,7 @@ class File implements IDriver
      *
      * @param string $data String to decrypt
      * @param string $iv   The initialisation vector used to encrypt the item
-     * @param string $tag Base64 encoded tag of the item (Required on PHP 7.1+)
+     * @param string $tag  Base64 encoded tag of the item (Required on PHP 7.1+)
      *
      * @return string
      */
