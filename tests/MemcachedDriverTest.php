@@ -20,4 +20,13 @@ class MemcachedDriverTest extends DriverTestCase
             'host' => 'localhost'
         ]);
     }
+
+    public function testItemExpiration()
+    {
+        $this->driver->set('foo', 'bar', 1);
+
+        sleep(5);
+
+        $this->assertFalse($this->driver->has('foo'));
+    }
 }
