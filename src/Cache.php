@@ -179,6 +179,10 @@ class Cache
             return $has;
         }
 
+        if ($this->remember_values && isset($this->loaded[$key])) {
+            return true;
+        }
+
         return $this->driver->has($key);
     }
 
