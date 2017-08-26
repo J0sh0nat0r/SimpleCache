@@ -18,7 +18,7 @@ use J0sh0nat0r\SimpleCache\IDriver;
 class Memcached implements IDriver
 {
     /**
-     * Pool of Memcache servers (instance of \Memcached)
+     * Pool of Memcache servers (instance of \Memcached).
      *
      * @var \Memcached
      */
@@ -34,7 +34,7 @@ class Memcached implements IDriver
             }
 
             $options = [
-                'servers' => [$options]
+                'servers' => [$options],
             ];
         }
 
