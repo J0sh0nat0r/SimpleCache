@@ -4,11 +4,15 @@ php:
   - '7.0'
   - '7.1'
 
+before_install:
+  - echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+
 install:
- - composer install --prefer-dist
+  - pecl install apcu
+  - composer install --prefer-dist
 
 before_script:
   - phpenv rehash
 
 script:
- - vendor/bin/phpunit
+  - vendor/bin/phpunit
