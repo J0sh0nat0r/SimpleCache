@@ -63,6 +63,7 @@ class Cache
 
         if (is_null($driver_options)) {
             $this->driver = new $driver();
+
             return;
         }
 
