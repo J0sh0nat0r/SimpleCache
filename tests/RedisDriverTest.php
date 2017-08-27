@@ -78,7 +78,7 @@ class RedisDriverTest extends DriverTestCase
     public function testConnectionErrorException()
     {
         new RedisDriver([
-            'host' => '0.0.0.0'
+            'host' => 'foo.bar.baz.qux'
         ]);
     }
 }
