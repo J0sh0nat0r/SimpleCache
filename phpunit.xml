@@ -3,16 +3,20 @@
 <phpunit bootstrap="./tests/bootstrap.php" colors="true">
     <testsuites>
         <testsuite name="SimpleCache Tests">
-            <directory>./tests/</directory>
+            <directory>./tests</directory>
         </testsuite>
     </testsuites>
     <filter>
+        <blacklist>
+            <file>./src/IDriver.php</file>
+            <directory suffix=".php">./vendor</directory>
+            <directory suffix=".php">./src/Exceptions</directory>
+        </blacklist>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">/src</directory>
-            <exclude>
-                <directory suffix=".php">/src/Exceptions</directory>
-                <file>/src/IDriver.php</file>
-            </exclude>
+            <directory suffix=".php">./src</directory>
         </whitelist>
     </filter>
+    <logging>
+        <log type="coverage-clover" target="build/logs/clover.xml"/>
+    </logging>
 </phpunit>
