@@ -27,33 +27,41 @@ class Redis implements IDriver
 
     public function __construct($options)
     {
-        $server = $options;
-
-        if (!isset($server['host'])) {
+        if (!isset($options['host'])) {
             throw new DriverOptionsInvalidException('Must pass redis a host option!');
+        }
+
+        if (!is_string($options['host'])) {
+            throw new DriverOptionsInvalidException('Host option must be a string');
+        }
+
+        $options['port'] = isset($options['port']) ? $options['port'] : 6379;
+
+        if (!is_numeric($options['port'])) {
+            throw new DriverOptionsInvalidException('Port option must be numeric');
         }
 
         $this->redis = new \Redis();
 
-        $connected = $this->redis->connect($server['host'], isset($server['port']) ? $server['port'] : 6379);
+        $connected = $this->redis->connect($options['host'], $options['port']);
 
         if (!$connected) {
             throw new \Exception('Failed to connect to Redis: '.$this->redis->getLastError());
         }
 
-        if (isset($server['password'])) {
-            $authenticated = $this->redis->auth($server['password']);
+        if (isset($options['password'])) {
+            $authenticated = $this->redis->auth($options['password']);
 
             if (!$authenticated) {
                 throw new \Exception('Failed to authenticate with Redis: '.$this->redis->getLastError());
             }
         }
 
-        if (isset($server['database'])) {
-            $success = $this->redis->select($server['database']);
+        if (isset($options['database'])) {
+            $success = $this->redis->select($options['database']);
 
             if (!$success) {
-                throw new \Exception('Failed to set redis database '.$this->redis->getLastError());
+                throw new \Exception('Failed to select Redis database: '.$this->redis->getLastError());
             }
         }
     }
