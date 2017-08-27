@@ -12,10 +12,10 @@ services:
   - redis-server
 
 before_install:
+  - if ! php -m | grep -q 'apc'; then echo yes | pecl install -f apcu-4.0.11; fi
   - phpenv config-add travis.ini
 
 install:
-  - if ! php -m | grep -q 'apc'; then yes | pecl install -f apcu-4.0.11; fi
   - composer install --prefer-dist
 
 before_script:
