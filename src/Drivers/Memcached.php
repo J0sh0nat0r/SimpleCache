@@ -5,6 +5,7 @@
 
 namespace J0sh0nat0r\SimpleCache\Drivers;
 
+use J0sh0nat0r\SimpleCache\Exceptions\DriverInitializationFailedException;
 use J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException;
 use J0sh0nat0r\SimpleCache\IDriver;
 
@@ -59,7 +60,13 @@ class Memcached implements IDriver
                 throw new DriverOptionsInvalidException('Server weight option must be numeric');
             }
 
-            $this->pool->addServer($server['host'], $server['port'], $server['weight']);
+            $success = $this->pool->addServer($server['host'], $server['port'], $server['weight']);
+
+            if (!$success) {
+                throw new DriverInitializationFailedException(
+                    'Failed to add a Memcached server: '.$this->pool->getResultMessage()
+                );
+            }
         }
     }
 

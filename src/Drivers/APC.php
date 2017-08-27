@@ -5,7 +5,7 @@
 
 namespace J0sh0nat0r\SimpleCache\Drivers;
 
-use J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException;
+use J0sh0nat0r\SimpleCache\Exceptions\DriverInitializationFailedException;
 use J0sh0nat0r\SimpleCache\IDriver;
 
 /**
@@ -29,7 +29,7 @@ class APC implements IDriver
         } elseif (extension_loaded('apc')) {
             $this->prefix = 'apc_';
         } else {
-            throw new DriverOptionsInvalidException('This driver requires APC or APCu');
+            throw new DriverInitializationFailedException('This driver requires APC or APCu');
         }
     }
 

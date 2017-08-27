@@ -5,6 +5,7 @@
 
 namespace J0sh0nat0r\SimpleCache\Drivers;
 
+use J0sh0nat0r\SimpleCache\Exceptions\DriverInitializationFailedException;
 use J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException;
 use J0sh0nat0r\SimpleCache\IDriver;
 
@@ -48,7 +49,9 @@ class File implements IDriver
         $this->dir = rtrim($options['dir'], '/');
         if (!is_dir($this->dir)) {
             if (!mkdir($this->dir)) {
-                throw new \Exception('Cache directory does not exist and automatic creation failed');
+                throw new DriverInitializationFailedException(
+                    'Cache directory does not exist and automatic creation failed'
+                );
             }
         }
 
@@ -63,7 +66,9 @@ class File implements IDriver
                 @unlink($item.'/item.dat');
 
                 if (!rmdir($item)) {
-                    throw new \Exception('Failed to remove invalid item! Please manually delete: '.$item);
+                    throw new DriverInitializationFailedException(
+                        'Failed to remove invalid item! Please manually delete: '.$item
+                    );
                 }
 
                 return;

@@ -5,6 +5,7 @@
 
 namespace J0sh0nat0r\SimpleCache\Drivers;
 
+use J0sh0nat0r\SimpleCache\Exceptions\DriverInitializationFailedException;
 use J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException;
 use J0sh0nat0r\SimpleCache\IDriver;
 
@@ -28,40 +29,52 @@ class Redis implements IDriver
     public function __construct($options)
     {
         if (!isset($options['host'])) {
-            throw new DriverOptionsInvalidException('Must pass redis a host option!');
+            throw new DriverOptionsInvalidException('The host option is required');
         }
 
         if (!is_string($options['host'])) {
-            throw new DriverOptionsInvalidException('Host option must be a string');
+            throw new DriverOptionsInvalidException('The host option must be a string');
         }
 
         $options['port'] = isset($options['port']) ? $options['port'] : 6379;
 
         if (!is_numeric($options['port'])) {
-            throw new DriverOptionsInvalidException('Port option must be numeric');
+            throw new DriverOptionsInvalidException('The port option must be numeric');
         }
 
         $this->redis = new \Redis();
 
-        $connected = $this->redis->connect($options['host'], $options['port']);
+        $connected = $this->redis->connect($options['host'], intval($options['port']));
 
         if (!$connected) {
-            throw new \Exception('Failed to connect to Redis: '.$this->redis->getLastError());
+            throw new DriverInitializationFailedException('Failed to connect to Redis: '.$this->redis->getLastError());
         }
 
         if (isset($options['password'])) {
+            if (!is_string($options['password'])) {
+                throw new DriverOptionsInvalidException('The password option must be a string');
+            }
+
             $authenticated = $this->redis->auth($options['password']);
 
             if (!$authenticated) {
-                throw new \Exception('Failed to authenticate with Redis: '.$this->redis->getLastError());
+                throw new DriverInitializationFailedException(
+                    'Failed to authenticate with Redis: '.$this->redis->getLastError()
+                );
             }
         }
 
         if (isset($options['database'])) {
-            $success = $this->redis->select($options['database']);
+            if (!is_numeric($options['database'])) {
+                throw new DriverOptionsInvalidException('The database option must be numeric');
+            }
+
+            $success = $this->redis->select(intval($options['database']));
 
             if (!$success) {
-                throw new \Exception('Failed to select Redis database: '.$this->redis->getLastError());
+                throw new DriverInitializationFailedException(
+                    'Failed to select Redis database: '.$this->redis->getLastError()
+                );
             }
         }
     }
