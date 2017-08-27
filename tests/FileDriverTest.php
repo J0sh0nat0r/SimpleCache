@@ -24,4 +24,15 @@ class FileDriverTest extends DriverTestCase
             'dir' => $this->dir
         ]);
     }
+
+    public function testItemOverwriting()
+    {
+        $this->driver->set('foo', 'bar', 0);
+
+        $this->assertEquals('bar', $this->driver->get('foo'));
+
+        $this->assertTrue($this->driver->set('foo', 'baz', 10));
+
+        $this->assertEquals('baz', $this->driver->get('foo'));
+    }
 }
