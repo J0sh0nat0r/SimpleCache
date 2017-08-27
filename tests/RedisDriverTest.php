@@ -73,7 +73,7 @@ class RedisDriverTest extends DriverTestCase
     }
 
     /**
-     * @expectedException \J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException
+     * @expectedException \J0sh0nat0r\SimpleCache\Exceptions\DriverInitializationFailedException
      */
     public function testConnectionErrorException()
     {
