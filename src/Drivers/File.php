@@ -84,12 +84,6 @@ class File implements IDriver
 
     public function set($key, $value, $time)
     {
-        $dir = $this->getDir($key);
-
-        if (!is_dir($dir)) {
-            mkdir($dir);
-        }
-
         $encrypted = $this->encrypt_data;
         $expiry = $time > 0 ? time() + $time : null;
 
@@ -109,6 +103,11 @@ class File implements IDriver
             if (!$this->remove($key)) {
                 throw new \Exception('Failed to remove pre-existing version of an item with the key: '.$key);
             }
+        }
+
+        $dir = $this->getDir($key);
+        if (!is_dir($dir)) {
+            mkdir($dir);
         }
 
         $success = file_put_contents($dir.'/data.json', json_encode($item_data));
