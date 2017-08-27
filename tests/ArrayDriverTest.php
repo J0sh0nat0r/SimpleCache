@@ -10,7 +10,7 @@ use J0sh0nat0r\SimpleCache\Drivers\ArrayDriver;
 /**
  * Tests the array driver.
  *
- * @covers ArrayDriver
+ * @covers \J0sh0nat0r\SimpleCache\Drivers\ArrayDriver
  */
 class ArrayDriverTest extends DriverTestCase
 {
