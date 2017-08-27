@@ -81,4 +81,15 @@ class RedisDriverTest extends DriverTestCase
             'host' => 'foo.bar.baz.qux'
         ]);
     }
+
+    /**
+     * @expectedException \J0sh0nat0r\SimpleCache\Exceptions\DriverInitializationFailedException
+     */
+    public function testDatabaseSelectionErrorException()
+    {
+        new RedisDriver([
+            'host' => 'localhost',
+            'database' => PHP_INT_MAX
+        ]);
+    }
 }
