@@ -24,7 +24,7 @@ class EncryptedFileDriverTest extends FileDriverTest
 
     public function testOutputIsEncrypted()
     {
-        $this->driver->set('foo', 'bar', 0);
+        $this->driver->put('foo', 'bar', 0);
 
         $output = file_get_contents($this->dir.'/'.sha1('foo').'/item.dat');
 

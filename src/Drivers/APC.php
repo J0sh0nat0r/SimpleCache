@@ -33,7 +33,7 @@ class APC implements IDriver
         }
     }
 
-    public function set($key, $value, $time)
+    public function put($key, $value, $time)
     {
         $function = $this->prefix.'store';
 

@@ -28,7 +28,7 @@ abstract class DriverTestCase extends TestCase
 
     public function testSet()
     {
-        $this->assertTrue($this->driver->set('foo', 'bar', 0));
+        $this->assertTrue($this->driver->put('foo', 'bar', 0));
     }
 
     /**
@@ -38,7 +38,7 @@ abstract class DriverTestCase extends TestCase
     {
         $this->assertFalse($this->driver->has('foo'));
 
-        $this->assertTrue($this->driver->set('foo', 'bar', 0));
+        $this->assertTrue($this->driver->put('foo', 'bar', 0));
 
         $this->assertTrue($this->driver->has('foo'));
     }
@@ -48,7 +48,7 @@ abstract class DriverTestCase extends TestCase
      */
     public function testGet()
     {
-        $this->driver->set('foo', 'bar', 0);
+        $this->driver->put('foo', 'bar', 0);
 
         $this->assertEquals('bar', $this->driver->get('foo'));
         $this->assertNull($this->driver->get('baz'));
@@ -60,7 +60,7 @@ abstract class DriverTestCase extends TestCase
      */
     public function testRemove()
     {
-        $this->driver->set('foo', 'bar', 0);
+        $this->driver->put('foo', 'bar', 0);
 
         $this->assertTrue($this->driver->remove('foo'));
         $this->assertFalse($this->driver->has('foo'));
@@ -72,8 +72,8 @@ abstract class DriverTestCase extends TestCase
      */
     public function testClear()
     {
-        $this->driver->set('foo', 'bar', 0);
-        $this->driver->set('baz', 'qux', 0);
+        $this->driver->put('foo', 'bar', 0);
+        $this->driver->put('baz', 'qux', 0);
 
         $this->driver->clear();
 
@@ -87,7 +87,7 @@ abstract class DriverTestCase extends TestCase
      */
     public function testItemExpiration()
     {
-        $this->driver->set('foo', 'bar', 1);
+        $this->driver->put('foo', 'bar', 1);
 
         sleep(2);
 
@@ -100,11 +100,11 @@ abstract class DriverTestCase extends TestCase
      */
     public function testItemOverwriting()
     {
-        $this->driver->set('foo', 'bar', 0);
+        $this->driver->put('foo', 'bar', 0);
 
         $this->assertEquals('bar', $this->driver->get('foo'));
 
-        $this->assertTrue($this->driver->set('foo', 'baz', 10));
+        $this->assertTrue($this->driver->put('foo', 'baz', 10));
 
         $this->assertEquals('baz', $this->driver->get('foo'));
     }

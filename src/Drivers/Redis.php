@@ -85,7 +85,7 @@ class Redis implements IDriver
         }
     }
 
-    public function set($key, $value, $time)
+    public function put($key, $value, $time)
     {
         if ($time === 0) {
             return $this->redis->set($key, $value);

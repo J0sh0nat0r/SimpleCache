@@ -70,7 +70,7 @@ class Memcached implements IDriver
         }
     }
 
-    public function set($key, $value, $time)
+    public function put($key, $value, $time)
     {
         $expiration = $time > 0 ? time() + $time : 0;
 

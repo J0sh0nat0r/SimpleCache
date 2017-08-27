@@ -11,7 +11,7 @@ namespace J0sh0nat0r\SimpleCache;
 interface IDriver
 {
     /**
-     * Store a value in the cache.
+     * Put a value in the cache.
      *
      * @param string $key
      * @param mixed  $value
@@ -19,7 +19,7 @@ interface IDriver
      *
      * @return bool
      */
-    public function set($key, $value, $time);
+    public function put($key, $value, $time);
 
     /**
      * Check if a value is stored in the cache.

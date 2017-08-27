@@ -21,7 +21,7 @@ class ArrayDriver implements IDriver
      */
     private $items;
 
-    public function set($key, $value, $time)
+    public function put($key, $value, $time)
     {
         $this->items[$key] = [
             'value'  => $value,

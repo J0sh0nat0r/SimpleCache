@@ -5,6 +5,7 @@
 
 namespace J0sh0nat0r\SimpleCache;
 
+use J0sh0nat0r\SimpleCache\Exceptions\InvalidKeyException;
 use J0sh0nat0r\SimpleCache\Internal\PCI;
 
 /**
@@ -87,6 +88,8 @@ class Cache
      */
     public function store($key, $value = null, $time = null)
     {
+        $this->validateKey($key);
+
         $time = empty($time) ? self::$DEFAULT_TIME : $time;
 
         if (is_array($key)) {
@@ -105,7 +108,7 @@ class Cache
             throw new \Exception('Time must be a number');
         }
 
-        $success = $this->driver->set($key, serialize($value), $time);
+        $success = $this->driver->put($key, serialize($value), $time);
 
         if ($success && $this->remember_values) {
             $this->loaded[$key] = $value;
@@ -118,12 +121,18 @@ class Cache
      * Store a item (or an array of items) in the cache indefinitely.
      *
      * @param string|array $key   The key to store the item under (can also be a `key => value` array)
-     * @param mixed        $value Value of the item (leave null of $key is a `key => value` array
+     * @param mixed $value Value of the item (leave null if $key is a `key => value` array)
      *
      * @return bool|bool[]
      */
     public function forever($key, $value = null)
     {
+        $this->validateKey($key);
+
+        if (is_array($key)) {
+            return $this->store($key, 0);
+        }
+
         return $this->store($key, $value, 0);
     }
 
@@ -140,6 +149,8 @@ class Cache
      */
     public function remember($key, $time, $generate, $default = null)
     {
+        $this->validateKey($key);
+
         if ($this->has($key)) {
             return $this->get($key);
         }
@@ -168,6 +179,8 @@ class Cache
      */
     public function has($key)
     {
+        $this->validateKey($key);
+
         if (is_array($key)) {
             $keys = $key;
 
@@ -196,6 +209,8 @@ class Cache
      */
     public function get($key, $default = null)
     {
+        $this->validateKey($key);
+
         if (is_array($key)) {
             $keys = $key;
 
@@ -240,6 +255,8 @@ class Cache
      */
     public function pull($key, $default = null)
     {
+        $this->validateKey($key);
+
         $result = $this->get($key, $default);
 
         $this->remove($key);
@@ -256,6 +273,8 @@ class Cache
      */
     public function remove($key)
     {
+        $this->validateKey($key);
+
         if (is_array($key)) {
             $keys = $key;
 
@@ -284,5 +303,21 @@ class Cache
         $this->loaded = [];
 
         return $this->driver->clear();
+    }
+
+    /**
+     * Checks if a key is valid, and if not and exception will be thrown.
+     *
+     * @param mixed $key Key to validate
+     *
+     * @throws InvalidKeyException
+     *
+     * @return void
+     */
+    private function validateKey($key)
+    {
+        if (!is_array($key) && !is_string($key)) {
+            throw new InvalidKeyException('The provided key was invalid');
+        }
     }
 }

@@ -82,7 +82,7 @@ class File implements IDriver
         });
     }
 
-    public function set($key, $value, $time)
+    public function put($key, $value, $time)
     {
         $encrypted = $this->encrypt_data;
         $expiry = $time > 0 ? time() + $time : null;
