@@ -22,4 +22,4 @@ before_script:
   - phpenv rehash
 
 script:
-  - vendor/bin/phpunit
+  - vendor/bin/phpunit --coverage-clover tests/output/coverage-clover.xml
