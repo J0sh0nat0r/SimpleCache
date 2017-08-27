@@ -152,7 +152,7 @@ class Cache
             return $value;
         }
 
-        if (is_callable($default)) {
+        if (is_callable($default) && !is_string($default)) {
             return call_user_func($default, $key);
         }
 
@@ -214,7 +214,7 @@ class Cache
         $result = $this->driver->get($key);
 
         if (is_null($result)) {
-            if (is_callable($default)) {
+            if (is_callable($default) && !is_string($default)) {
                 return call_user_func($default, $key);
             }
 
