@@ -6,8 +6,6 @@
 namespace J0sh0nat0r\SimpleCache\Tests;
 
 use J0sh0nat0r\SimpleCache\Drivers\Redis as RedisDriver;
-use J0sh0nat0r\SimpleCache\Exceptions\DriverInitializationFailedException;
-use J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException;
 
 /**
  * Tests the Redis driver.
@@ -24,7 +22,7 @@ class RedisDriverTest extends DriverTestCase
     }
 
     /**
-     * @expectedException DriverOptionsInvalidException
+     * @expectedException \J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException
      */
     public function testHostOptionIsRequired()
     {
@@ -32,7 +30,7 @@ class RedisDriverTest extends DriverTestCase
     }
 
     /**
-     * @expectedException DriverOptionsInvalidException
+     * @expectedException \J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException
      */
     public function testHostOptionMustBeString()
     {
@@ -42,7 +40,7 @@ class RedisDriverTest extends DriverTestCase
     }
 
     /**
-     * @expectedException DriverOptionsInvalidException
+     * @expectedException \J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException
      */
     public function testPortOptionMustBeNumeric()
     {
@@ -53,7 +51,7 @@ class RedisDriverTest extends DriverTestCase
     }
 
     /**
-     * @expectedException DriverOptionsInvalidException
+     * @expectedException \J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException
      */
     public function testPasswordOptionMustBeString()
     {
@@ -64,7 +62,7 @@ class RedisDriverTest extends DriverTestCase
     }
 
     /**
-     * @expectedException DriverOptionsInvalidException
+     * @expectedException \J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException
      */
     public function testDatabaseOptionMustBeNumeric()
     {
@@ -75,7 +73,7 @@ class RedisDriverTest extends DriverTestCase
     }
 
     /**
-     * @expectedException DriverInitializationFailedException
+     * @expectedException \J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException
      */
     public function testConnectionErrorException()
     {
