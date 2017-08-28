@@ -26,24 +26,28 @@ class File implements IDriver
     private $dir;
 
     /**
-     * Determines whether or not to encrypt item data,
-     * basically a shortcut for `!empty($this->encryption_key).
-     *
-     * @var bool
-     */
-    private $encrypt_data;
-
-    /**
      * Key to use when encrypting item data.
      *
      * @var string
      */
     private $encryption_key;
 
+    /**
+     * Determines whether or not to encrypt item data,
+     * basically a shortcut for `!empty($this->encryption_key).
+     *
+     * @var bool
+     */
+    private $encrypt_data = false;
+
     public function __construct($options)
     {
         if (!isset($options['dir'])) {
-            throw new DriverOptionsInvalidException('Missing option: dir');
+            throw new DriverOptionsInvalidException('The dir option is required');
+        }
+
+        if (!is_string($options['dir'])) {
+            throw new DriverOptionsInvalidException('The dir option must be a string');
         }
 
         $this->dir = rtrim($options['dir'], '/');
@@ -55,17 +59,18 @@ class File implements IDriver
             }
         }
 
-        $this->encrypt_data = isset($options['encryption_key']);
-        if ($this->encrypt_data) {
+        if (isset($options['encryption_key'])) {
+            if (!is_string($options['encryption_key'])) {
+                throw new DriverOptionsInvalidException('The encryption_key option must be a string');
+            }
+
+            $this->encrypt_data = true;
             $this->encryption_key = hash('sha256', $options['encryption_key']);
         }
 
         $this->forAll(function ($item) {
             if (!$this->isValid($item)) {
-                @unlink($item.'/data.json');
-                @unlink($item.'/item.dat');
-
-                if (!rmdir($item)) {
+                if (!$this->delDir($item)) {
                     throw new DriverInitializationFailedException(
                         'Failed to remove invalid item! Please manually delete: '.$item
                     );
@@ -164,18 +169,17 @@ class File implements IDriver
     {
         $dir = $this->getDir($key);
 
-        @unlink($dir.'/data.json');
-        @unlink($dir.'/item.dat');
+        if (!is_dir($dir)) {
+            return true;
+        }
 
-        return rmdir($dir);
+        return $this->delDir($this->getDir($key));
     }
 
     public function clear()
     {
         $this->forAll(function ($item) {
-            $data = json_decode(file_get_contents($item.'/data.json'), true);
-
-            $this->remove($data['key']);
+            $this->delDir($item);
         });
     }
 
@@ -184,11 +188,38 @@ class File implements IDriver
      *
      * @param string $key Key of the item to generate a directory for
      *
-     * @return string
+     * @return string Directory for the given key
      */
     private function getDir($key)
     {
         return $this->dir.'/'.sha1($key);
+    }
+
+    /**
+     * Recursively deletes a directory.
+     *
+     * @param string $directory Directory to delete
+     *
+     * @return bool TRUE on success, FALSE on failure
+     */
+    private function delDir($directory)
+    {
+        $success = true;
+        $contents = array_slice(scandir($directory), 2);
+
+        foreach ($contents as $key => $value) {
+            $path = $directory.DIRECTORY_SEPARATOR.$value;
+
+            if (is_file($path)) {
+                $success = unlink($path) ? $success : false;
+            } else {
+                $success = $this->delDir($path) ? $success : false;
+            }
+        }
+
+        $success = rmdir($directory) ? $success : false;
+
+        return $success;
     }
 
     /**
