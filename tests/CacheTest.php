@@ -140,7 +140,7 @@ class CacheTest extends TestCase
         );
 
         $this->assertEquals(
-            ['foo' => false, 'baz' => false],
+            ['foo' => true, 'baz' => true],
             $this->cache->forever(['foo' => 'bar', 'baz' => 'qux'])
         );
 
