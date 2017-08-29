@@ -88,7 +88,7 @@ class CacheTest extends TestCase
 
         $this->assertTrue($this->cache->store('foo', 'bar'));
 
-        $this->assertEquals('foo', $this->cache->pull('foo'));
+        $this->assertEquals('bar', $this->cache->pull('foo'));
 
         $this->assertFalse($this->cache->has('foo'));
 
