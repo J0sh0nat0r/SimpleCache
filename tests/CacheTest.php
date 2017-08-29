@@ -222,4 +222,31 @@ class CacheTest extends TestCase
             $this->cache->has(['foo', 'baz'])
         );
     }
+
+    /**
+     * @depends testStore
+     * @depends testGet
+     * @depends testHas
+     * @depends testRemove
+     */
+    public function testPCI()
+    {
+        $this->assertFalse(isset($this->cache->items->foo));
+        $this->assertFalse($this->cache->has('foo'));
+
+        $this->cache->items->foo = 'bar';
+
+        $this->assertTrue(isset($this->cache->items->foo));
+        $this->assertTrue($this->cache->has('foo'));
+
+        $this->assertEquals('bar', $this->cache->items->foo);
+        $this->assertEquals('bar', $this->cache->get('foo'));
+
+        unset($this->cache->items->foo);
+
+        $this->assertFalse(isset($this->cache->items->foo));
+        $this->assertFalse($this->cache->has('foo'));
+
+        $this->assertNull($this->cache->items->foo);
+    }
 }
