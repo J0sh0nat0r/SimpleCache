@@ -61,24 +61,6 @@ class CacheTest extends TestCase
 
     /**
      * @depends testStore
-     * @depends testGet
-     * @depends testHas
-     */
-    public function testPull()
-    {
-        $this->assertFalse($this->cache->has('foo'));
-
-        $this->assertTrue($this->cache->store('foo', 'bar'));
-
-        $this->assertEquals('foo', $this->cache->pull('foo'));
-
-        $this->assertFalse($this->cache->has('foo'));
-
-        $this->assertEquals('baz', $this->cache->pull('foo', 'baz'));
-    }
-
-    /**
-     * @depends testStore
      * @depends testHas
      */
     public function testRemove()
@@ -92,6 +74,25 @@ class CacheTest extends TestCase
         $this->assertTrue($this->cache->remove('foo'));
 
         $this->assertFalse($this->cache->has('foo'));
+    }
+
+    /**
+     * @depends testStore
+     * @depends testGet
+     * @depends testHas
+     * @depends testRemove
+     */
+    public function testPull()
+    {
+        $this->assertFalse($this->cache->has('foo'));
+
+        $this->assertTrue($this->cache->store('foo', 'bar'));
+
+        $this->assertEquals('foo', $this->cache->pull('foo'));
+
+        $this->assertFalse($this->cache->has('foo'));
+
+        $this->assertEquals('baz', $this->cache->pull('foo', 'baz'));
     }
 
     /**
@@ -126,7 +127,6 @@ class CacheTest extends TestCase
 
     /**
      * @depends testStoreArray
-     *
      */
     public function testHasArray()
     {
@@ -143,6 +143,61 @@ class CacheTest extends TestCase
         $this->assertEquals(
             ['foo' => true, 'baz' => true, 'quux' => false],
             $this->cache->has(['foo', 'baz', 'quux'])
+        );
+    }
+
+    /**
+     * @depends testStoreArray
+     * @depends testHasArray
+     */
+    public function testRemoveArray()
+    {
+        $this->assertEquals(
+            ['foo' => false, 'baz' => false],
+            $this->cache->has(['foo', 'baz'])
+        );
+
+        $this->assertEquals(
+            ['foo' => true, 'baz' => true],
+            $this->cache->store(['foo' => 'bar', 'baz' => 'qux'])
+        );
+
+        $this->assertEquals(
+            ['foo' => true, 'baz' => true],
+            $this->cache->remove(['foo', 'baz'])
+        );
+
+        $this->assertEquals(
+            ['foo' => false, 'baz' => false],
+            $this->cache->has(['foo', 'baz'])
+        );
+    }
+
+    /**
+     * @depends testStoreArray
+     * @depends testHasArray
+     * @depends testRemoveArray
+     */
+    public function testPullArray()
+    {
+        $this->assertEquals(
+            ['foo' => false, 'baz' => false],
+            $this->cache->has(['foo', 'baz'])
+        );
+
+        $this->assertEquals(
+            ['foo' => true, 'baz' => true],
+            $this->cache->store(['foo' => 'bar', 'baz' => 'qux'])
+        );
+
+        $this->assertEquals(
+            ['foo' => 'bar', 'baz' => 'qux'],
+            $this->cache->pull(['foo', 'baz'])
+        );
+
+        $this->assertEquals(
+            ['foo' => false, 'baz' => false],
+            $this->cache->has(['foo', 'baz'])
         );
     }
 
