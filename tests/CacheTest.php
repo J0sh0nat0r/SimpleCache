@@ -61,6 +61,24 @@ class CacheTest extends TestCase
 
     /**
      * @depends testStore
+     * @depends testGet
+     * @depends testHas
+     */
+    public function testPull()
+    {
+        $this->assertFalse($this->cache->has('foo'));
+
+        $this->assertTrue($this->cache->store('foo', 'bar'));
+
+        $this->assertEquals('foo', $this->cache->pull('foo'));
+
+        $this->assertFalse($this->cache->has('foo'));
+
+        $this->assertEquals('baz', $this->cache->pull('foo', 'baz'));
+    }
+
+    /**
+     * @depends testStore
      * @depends testHas
      */
     public function testRemove()
