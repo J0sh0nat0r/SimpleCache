@@ -5,12 +5,10 @@
 
 namespace J0sh0nat0r\SimpleCache\Tests;
 
-use PHPUnit\Framework\TestCase;
-
 /**
  * Tests a driver
  */
-abstract class DriverTestCase extends TestCase
+abstract class DriverTestCase extends \PHPUnit_Framework_TestCase
 {
     /**
      * An instance of the driver to test.
