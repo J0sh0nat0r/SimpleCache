@@ -8,6 +8,11 @@ namespace J0sh0nat0r\SimpleCache\Tests;
 use J0sh0nat0r\SimpleCache\Cache;
 use J0sh0nat0r\SimpleCache\Drivers\ArrayDriver;
 
+/**
+ * Tests the PCI.
+ *
+ * @covers \J0sh0nat0r\SimpleCache\Internal\PCI
+ */
 class PCITest extends \PHPUnit_Framework_TestCase
 {
     /**
