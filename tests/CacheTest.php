@@ -283,4 +283,12 @@ class CacheTest extends \PHPUnit_Framework_TestCase
             $this->cache->has(['foo', 'baz'])
         );
     }
+
+    /**
+     * @expectedException \J0sh0nat0r\SimpleCache\Exceptions\InvalidKeyException
+     */
+    public function testInvalidKeyExceptionIsThrown()
+    {
+        $this->cache->store(null, 'foo');
+    }
 }
