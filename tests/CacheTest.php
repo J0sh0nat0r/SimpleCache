@@ -60,6 +60,39 @@ class CacheTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @depends testStore
+     * @depends testGet
+     * @depends testHas
+     */
+    public function testRemember()
+    {
+        function cachedTime()
+        {
+            return $this->cache->remember('foo', 2, function () {
+                return time();
+            });
+        }
+
+        $time = cachedTime();
+
+        $this->assertEquals($time, cachedTime());
+
+        sleep(1);
+
+        $this->assertEquals($time, cachedTime());
+
+        sleep(1);
+
+        $this->assertEquals(time(), cachedTime());
+
+        $this->assertEquals('baz', $this->cache->remember('qux', 0, function () {
+            return null;
+        }, 'baz'));
+
+        $this->assertFalse($this->cache->has('baz'));
+    }
+
+    /**
+     * @depends testStore
      * @depends testHas
      */
     public function testRemove()
