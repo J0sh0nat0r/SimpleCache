@@ -254,4 +254,33 @@ class CacheTest extends \PHPUnit_Framework_TestCase
             $this->cache->has(['foo', 'baz'])
         );
     }
+
+    /**
+     * @depends testStoreArray
+     * @depends testHasArray
+     */
+    public function testClear()
+    {
+        $this->assertEquals(
+            ['foo' => false, 'baz' => false],
+            $this->cache->has(['foo', 'baz'])
+        );
+
+        $this->assertEquals(
+            ['foo' => true, 'baz' => true],
+            $this->cache->store(['foo' => 'bar', 'baz' => 'qux'])
+        );
+
+        $this->assertEquals(
+            ['foo' => true, 'baz' => true],
+            $this->cache->has(['foo', 'baz'])
+        );
+
+        $this->assertTrue($this->cache->clear());
+
+        $this->assertEquals(
+            ['foo' => false, 'baz' => false],
+            $this->cache->has(['foo', 'baz'])
+        );
+    }
 }
