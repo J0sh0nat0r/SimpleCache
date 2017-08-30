@@ -104,11 +104,11 @@ class Cache
             return $successes;
         }
 
-        if (!is_int($time)) {
-            throw new \Exception('Time must be a number');
+        if (!is_numeric($time)) {
+            throw new \Exception('Time must be numeric');
         }
 
-        $success = $this->driver->put($key, serialize($value), $time);
+        $success = $this->driver->put($key, serialize($value), intval($time));
 
         if ($success && $this->remember_values) {
             $this->loaded[$key] = $value;
