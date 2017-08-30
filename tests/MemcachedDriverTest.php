@@ -10,6 +10,8 @@ use J0sh0nat0r\SimpleCache\Drivers\Memcached as MemcachedDriver;
 /**
  * Tests the Memcached driver.
  *
+ * @requires extension memcached
+ *
  * @covers \J0sh0nat0r\SimpleCache\Drivers\Memcached
  */
 class MemcachedDriverTest extends DriverTestCase

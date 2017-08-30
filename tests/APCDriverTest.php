@@ -10,6 +10,8 @@ use J0sh0nat0r\SimpleCache\Drivers\APC as APCDriver;
 /**
  * Tests the APC driver.
  *
+ * @requires extension apc|apcu
+ *
  * @covers \J0sh0nat0r\SimpleCache\Drivers\APC
  */
 class APCDriverTest extends DriverTestCase

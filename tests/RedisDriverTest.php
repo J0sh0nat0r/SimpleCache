@@ -10,6 +10,8 @@ use J0sh0nat0r\SimpleCache\Drivers\Redis as RedisDriver;
 /**
  * Tests the Redis driver.
  *
+ * @requires extension redis
+ *
  * @covers \J0sh0nat0r\SimpleCache\Drivers\Redis
  */
 class RedisDriverTest extends DriverTestCase
