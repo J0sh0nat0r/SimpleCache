@@ -65,24 +65,24 @@ class CacheTest extends \PHPUnit_Framework_TestCase
      */
     public function testRemember()
     {
-        function cachedTime()
+        function cachedTime(Cache $cache)
         {
-            return $this->cache->remember('foo', 2, function () {
+            return $cache->remember('foo', 2, function () {
                 return time();
             });
         }
 
-        $time = cachedTime();
+        $time = cachedTime($this->cache);
 
-        $this->assertEquals($time, cachedTime());
-
-        sleep(1);
-
-        $this->assertEquals($time, cachedTime());
+        $this->assertEquals($time, cachedTime($this->cache));
 
         sleep(1);
 
-        $this->assertEquals(time(), cachedTime());
+        $this->assertEquals($time, cachedTime($this->cache));
+
+        sleep(1);
+
+        $this->assertEquals(time(), cachedTime($this->cache));
 
         $this->assertEquals('baz', $this->cache->remember('qux', 0, function () {
             return null;
