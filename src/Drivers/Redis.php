@@ -96,7 +96,8 @@ class Redis implements IDriver
 
     public function has($key)
     {
-        return $this->redis->exists($key);
+        // Returns an int on PHP 7.2
+        return (bool)$this->redis->exists($key);
     }
 
     public function get($key)
