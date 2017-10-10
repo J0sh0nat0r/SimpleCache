@@ -56,7 +56,7 @@ class Cache
      * @param string     $driver         The driver to use
      * @param null|array $driver_options Options to pass to the driver
      *
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function __construct($driver, $driver_options = null)
     {
@@ -69,7 +69,7 @@ class Cache
         }
 
         if (!is_array($driver_options)) {
-            throw new \Exception('The `driver_options` argument must be either null or an array');
+            throw new \InvalidArgumentException('The `driver_options` argument must be either `null` or an `array`');
         }
 
         $this->driver = new $driver($driver_options);
@@ -82,7 +82,8 @@ class Cache
      * @param mixed        $value Value of the item (can also be the time in the case that $key is an array)
      * @param int          $time  Time to store the item for (can also be null in the case that $key is an array)
      *
-     * @throws \Exception
+     * @throws \InvalidArgumentException
+     * @throws InvalidKeyException
      *
      * @return bool|bool[]
      */
@@ -105,7 +106,7 @@ class Cache
         }
 
         if (!is_numeric($time)) {
-            throw new \Exception('Time must be numeric');
+            throw new \InvalidArgumentException('Time must be numeric');
         }
 
         $success = $this->driver->put($key, serialize($value), intval($time));
@@ -123,12 +124,12 @@ class Cache
      * @param string|array $key   The key to store the item under (can also be a `key => value` array)
      * @param mixed        $value Value of the item (leave null if $key is a `key => value` array)
      *
+     * @throws InvalidKeyException
+     *
      * @return bool|bool[]
      */
     public function forever($key, $value = null)
     {
-        $this->validateKey($key);
-
         if (is_array($key)) {
             return $this->store($key, 0);
         }
@@ -144,6 +145,8 @@ class Cache
      * @param int      $time     Time to remember the item for
      * @param \Closure $generate Function used to generate the value
      * @param mixed    $default  Default value in case an item isn't found and $generate returns null (can be a callback)
+     *
+     * @throws InvalidKeyException
      *
      * @return mixed
      */
@@ -175,6 +178,8 @@ class Cache
      *
      * @param string|string[] $key The key (or keys) to search for
      *
+     * @throws InvalidKeyException
+     *
      * @return bool|bool[]
      */
     public function has($key)
@@ -204,6 +209,8 @@ class Cache
      *
      * @param string|string[] $key     The key (or keys) to retrieve the values of
      * @param mixed           $default Default value in case an item isn't found (can be a callback)
+     *
+     * @throws InvalidKeyException
      *
      * @return mixed
      */
@@ -251,6 +258,8 @@ class Cache
      * @param string|string[] $key     Key of the item to pull (can also be an array of keys)
      * @param mixed           $default Default value in case an item isn't found (can be a callback)
      *
+     * @throws InvalidKeyException
+     *
      * @return mixed
      */
     public function pull($key, $default = null)
@@ -268,6 +277,8 @@ class Cache
      * Remove an item (or multiple items) from the cache.
      *
      * @param string|string[] $key Key of the item to remove (can also be an array of keys)
+     *
+     * @throws InvalidKeyException
      *
      * @return bool|bool[]
      */

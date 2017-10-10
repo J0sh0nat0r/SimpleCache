@@ -24,4 +24,26 @@ class FileDriverTest extends DriverTestCase
             'dir' => $this->dir
         ]);
     }
+
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        unlink($this->dir);
+    }
+
+    public function testDirectoryCreation()
+    {
+        $dir = sys_get_temp_dir().'/sc-'.sha1(rand(0, 1000));
+
+        $this->assertFalse(is_dir($dir));
+
+        new FileDriver([
+            'dir' => $dir
+        ]);
+
+        $this->assertTrue(is_dir($dir));
+
+        unlink($dir);
+    }
 }

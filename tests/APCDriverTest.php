@@ -24,6 +24,5 @@ class APCDriverTest extends DriverTestCase
     public function testItemExpiration()
     {
         // Can't test item expiration as APC requires a new request in order to expunge an item
-        $this->assertTrue(true);
     }
 }

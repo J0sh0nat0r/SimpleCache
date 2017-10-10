@@ -18,7 +18,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
     /**
      * @var Cache
      */
-    private $cache;
+    protected $cache;
 
     public function setUp()
     {
@@ -290,5 +290,13 @@ class CacheTest extends \PHPUnit_Framework_TestCase
     public function testInvalidKeyExceptionIsThrown()
     {
         $this->cache->store(null, 'foo');
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testInvalidArgumentExceptionIsThrownForDriverOptions()
+    {
+        new Cache(null, '');
     }
 }

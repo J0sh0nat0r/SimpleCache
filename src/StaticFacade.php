@@ -12,8 +12,8 @@ namespace J0sh0nat0r\SimpleCache;
  * @method  static mixed       remember(string $key, int $time, \Closure $generate, mixed $default = null)
  * @method  static bool|array  forever(string|array $key, mixed $value = null)
  * @method  static bool|array  has(string|string[] $key)
- * @method  static mixed       get(string|string[] $key, mixed $default)
- * @method  static mixed       pull(string|string[] $key, mixed $default)
+ * @method  static mixed       get(string | string [] $key, mixed $default = null)
+ * @method  static mixed       pull(string | string [] $key, mixed $default = null)
  * @method  static bool|array  remove(string|string[] $key)
  * @method  static bool        clear()
  *
@@ -36,6 +36,8 @@ class StaticFacade
      * @param string     $name      Name of the function being called
      * @param array|null $arguments Arguments passed ot the function being called
      *
+     * @throws \Exception
+     *
      * @return mixed
      */
     public static function __callStatic($name, $arguments)
@@ -45,6 +47,8 @@ class StaticFacade
         if (method_exists(self::$cache, $name)) {
             return call_user_func_array([self::$cache, $name], $arguments);
         }
+
+        throw new \Exception("Invalid method $name");
     }
 
     /**
@@ -52,7 +56,7 @@ class StaticFacade
      *
      * @param Cache $cache The SimpleCache instance to bind to
      */
-    public static function bind($cache)
+    public static function bind(Cache $cache)
     {
         self::$cache = $cache;
     }
@@ -69,7 +73,7 @@ class StaticFacade
     {
         if (!isset(self::$cache)) {
             throw new \Exception(
-                'Please bind StaticFacade to a SimpleCache instance with setCache'
+                'Please bind StaticFacade to a SimpleCache instance with the `bind` method'
             );
         }
     }
