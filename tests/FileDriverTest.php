@@ -29,7 +29,7 @@ class FileDriverTest extends DriverTestCase
     {
         parent::tearDown();
 
-        unlink($this->dir);
+        rmdir($this->dir);
     }
 
     public function testDirectoryCreation()
@@ -44,6 +44,6 @@ class FileDriverTest extends DriverTestCase
 
         $this->assertTrue(is_dir($dir));
 
-        unlink($dir);
+        rmdir($dir);
     }
 }
