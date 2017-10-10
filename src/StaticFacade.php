@@ -48,7 +48,7 @@ class StaticFacade
             return call_user_func_array([self::$cache, $name], $arguments);
         }
 
-        throw new \Exception("Invalid method $name");
+        throw new \Exception("Invalid method: $name");
     }
 
     /**

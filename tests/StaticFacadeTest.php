@@ -44,4 +44,15 @@ class StaticFacadeTest extends TestCase
 
         $this->assertEquals(false, Cache::get('baz', false));
     }
+
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage Invalid method: foo
+     */
+    public function testInvalidMethodException()
+    {
+        Cache::bind($this->cache);
+
+        Cache::foo();
+    }
 }
