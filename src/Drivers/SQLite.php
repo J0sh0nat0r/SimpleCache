@@ -55,7 +55,6 @@ class SQLite implements IDriver
             $encryption_key = $options['encryption_key'];
         }
 
-
         $this->db = new SQLite3($options['file'], null, $encryption_key);
 
         if (!$this->db->query(
@@ -70,13 +69,13 @@ class SQLite implements IDriver
     }
 
     /**
-     * Clears expired items from the cache
+     * Clears expired items from the cache.
      *
      * @return bool
      */
     private function clearExpiredItems()
     {
-        return (bool)$this->db->query(
+        return (bool) $this->db->query(
             "DELETE FROM \"$this->table_name\" WHERE e <= strftime('%s','now') AND e > 0"
         );
     }
@@ -89,7 +88,7 @@ class SQLite implements IDriver
         $stmt->bindParam('v', $value, SQLITE3_TEXT);
         $stmt->bindParam('e', $time, SQLITE3_INTEGER);
 
-        return (bool)$stmt->execute();
+        return (bool) $stmt->execute();
     }
 
     public function remove($key)
@@ -102,7 +101,7 @@ class SQLite implements IDriver
 
         $stmt->bindParam('k', $key, SQLITE3_TEXT);
 
-        return (bool)$stmt->execute();
+        return (bool) $stmt->execute();
     }
 
     public function has($key)
@@ -127,6 +126,6 @@ class SQLite implements IDriver
 
     public function clear()
     {
-        return (bool)$this->db->query("DELETE FROM \"$this->table_name\"");
+        return (bool) $this->db->query("DELETE FROM \"$this->table_name\"");
     }
 }
