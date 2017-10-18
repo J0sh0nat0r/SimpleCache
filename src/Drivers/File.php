@@ -40,6 +40,14 @@ class File implements IDriver
      */
     private $encrypt_data = false;
 
+    /**
+     * File driver constructor.
+     *
+     * @param $options
+     *
+     * @throws DriverInitializationFailedException
+     * @throws DriverOptionsInvalidException
+     */
     public function __construct($options)
     {
         if (!isset($options['dir'])) {
@@ -87,6 +95,15 @@ class File implements IDriver
         });
     }
 
+    /**
+     * @param string $key
+     * @param mixed $value
+     * @param int $time
+     *
+     * @return bool
+     *
+     * @throws \Exception
+     */
     public function put($key, $value, $time)
     {
         $encrypted = $this->encrypt_data;
@@ -136,6 +153,13 @@ class File implements IDriver
         return true;
     }
 
+    /**
+     * @param string $key
+     *
+     * @return bool|null|string
+     *
+     * @throws \Exception
+     */
     public function get($key)
     {
         if (!$this->has($key)) {
