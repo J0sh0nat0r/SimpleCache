@@ -79,11 +79,11 @@ class SQLite implements IDriver
 
     public function put($key, $value, $time)
     {
-        $stmt = $this->db->prepare("INSERT INTO \"$this->table_name\" VALUES (:k, :v, :e)");
+        $stmt = $this->db->prepare("INSERT INTO \"$this->table_name\" VALUES (?, ?, ?)");
 
-        $stmt->bindParam('k', $key, SQLITE3_TEXT);
-        $stmt->bindParam('v', $value, SQLITE3_TEXT);
-        $stmt->bindParam('e', $time, SQLITE3_INTEGER);
+        $stmt->bindParam(1, $key, SQLITE3_TEXT);
+        $stmt->bindParam(2, $value, SQLITE3_TEXT);
+        $stmt->bindParam(3, $time, SQLITE3_INTEGER);
 
         return (bool) $stmt->execute();
     }
@@ -94,9 +94,9 @@ class SQLite implements IDriver
             return true;
         }
 
-        $stmt = $this->db->prepare("DELETE FROM \"$this->table_name\" WHERE k = :k");
+        $stmt = $this->db->prepare("DELETE FROM \"$this->table_name\" WHERE k = ?");
 
-        $stmt->bindParam('k', $key, SQLITE3_TEXT);
+        $stmt->bindParam(1, $key, SQLITE3_TEXT);
 
         return (bool) $stmt->execute();
     }
@@ -108,9 +108,9 @@ class SQLite implements IDriver
 
     public function get($key)
     {
-        $stmt = $this->db->prepare("SELECT * FROM \"$this->table_name\" WHERE k = :k");
+        $stmt = $this->db->prepare("SELECT * FROM \"$this->table_name\" WHERE k = ?");
 
-        $stmt->bindParam('k', $key, SQLITE3_TEXT);
+        $stmt->bindParam(1, $key, SQLITE3_TEXT);
 
         $results = $stmt->execute()->fetchArray();
 
