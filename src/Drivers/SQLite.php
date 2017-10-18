@@ -77,11 +77,11 @@ class SQLite implements IDriver
 
     public function put($key, $value, $time)
     {
-        $time += time();
-
         if ($this->has($key)) {
             $this->remove($key);
         }
+
+        $time = $time > 0 ? $time + time() : $time;
 
         $stmt = $this->db->prepare("INSERT INTO \"$this->table_name\" VALUES (?, ?, ?)");
 
