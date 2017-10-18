@@ -62,7 +62,7 @@ class SQLite implements IDriver
             $encryption_key = $options['encryption_key'];
         }
 
-        $this->db = new SQLite3($options['file'], SQLITE3_OPEN_CREATE, $encryption_key);
+        $this->db = new SQLite3($options['file'], null, $encryption_key);
 
         if (!$this->db->query(
             "CREATE TABLE IF NOT EXISTS \"$this->table_name\" (k TEXT PRIMARY KEY, v TEXT, e INT)"
