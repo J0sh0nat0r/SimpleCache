@@ -8,13 +8,13 @@ namespace J0sh0nat0r\SimpleCache\Tests;
 use J0sh0nat0r\SimpleCache\Drivers\APC as APCDriver;
 
 /**
- * Tests the APC driver.
+ * Tests the APCu driver.
  *
- * @requires extension apc
+ * @requires extension apcu
  *
  * @covers \J0sh0nat0r\SimpleCache\Drivers\APC
  */
-class APCDriverTest extends DriverTestCase
+class APCuDriverTest extends DriverTestCase
 {
     public function setUp()
     {
@@ -23,6 +23,6 @@ class APCDriverTest extends DriverTestCase
 
     public function testItemExpiration()
     {
-        // Can't test item expiration as APC requires a new request in order to expunge an item
+        // Can't test item expiration as APCu requires a new request in order to expunge an item
     }
 }
