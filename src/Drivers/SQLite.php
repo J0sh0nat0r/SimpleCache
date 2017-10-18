@@ -116,7 +116,7 @@ class SQLite implements IDriver
             return null;
         }
 
-        return $results[0]['v'];
+        return $results['v'];
     }
 
     public function clear()
