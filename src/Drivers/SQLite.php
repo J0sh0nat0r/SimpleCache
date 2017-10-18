@@ -77,7 +77,6 @@ class SQLite implements IDriver
         $this->db->close();
     }
 
-
     public function put($key, $value, $time)
     {
         $stmt = $this->db->prepare("INSERT INTO \"$this->table_name\" VALUES (:k, :v, :e)");
