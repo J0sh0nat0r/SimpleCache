@@ -116,6 +116,12 @@ class SQLite implements IDriver
             return null;
         }
 
+        if ($results['e'] <= time()) {
+            $this->remove($key);
+
+            return null;
+        }
+
         return $results['v'];
     }
 

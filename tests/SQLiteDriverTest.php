@@ -40,7 +40,7 @@ class SQLiteDriverTest extends DriverTestCase
             'file' => $this->file
         ]);
 
-        $this->assertTrue(file_exists($file));
+        $this->assertTrue(is_file($file));
 
         unlink($file);
     }
