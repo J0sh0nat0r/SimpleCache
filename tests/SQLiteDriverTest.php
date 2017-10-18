@@ -37,10 +37,10 @@ class SQLiteDriverTest extends DriverTestCase
         $file = sys_get_temp_dir().'/sc-'.sha1(rand(100, 200)).'.sqlite3';
 
         new SQLiteDriver([
-            'file' => $this->file
+            'file' => $file
         ]);
 
-        $this->assertTrue(is_file($file));
+        $this->assertTrue(file_exists($file));
 
         unlink($file);
     }
