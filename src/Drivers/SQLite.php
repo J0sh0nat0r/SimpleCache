@@ -116,7 +116,7 @@ class SQLite implements IDriver
             return null;
         }
 
-        if ($results['e'] <= time()) {
+        if ($results['e'] > 0 && $results['e'] <= time()) {
             // Items will persist until the next instantiation, could be an issue?
             return null;
         }
