@@ -20,7 +20,6 @@ use SQLite3;
 class SQLite implements IDriver
 {
     private $db;
-    private $file;
     private $table_name = 'cache';
 
     /**
@@ -45,8 +44,6 @@ class SQLite implements IDriver
             }
         }
 
-        $this->file = $options['file'];
-
         if (isset($options['table_name'])) {
             if (!is_string($options['table_name'])) {
                 throw new DriverOptionsInvalidException('The `table_name` option must be a `string`');
@@ -65,7 +62,7 @@ class SQLite implements IDriver
             $encryption_key = $options['encryption_key'];
         }
 
-        $this->db = new SQLite3($this->file, null, $encryption_key);
+        $this->db = new SQLite3($options['file'], null, $encryption_key);
 
         if (!$this->db->query(
             "CREATE TABLE IF NOT EXISTS \"$this->table_name\" (k TEXT PRIMARY KEY, v TEXT, e INT)"
@@ -83,30 +80,26 @@ class SQLite implements IDriver
 
     public function put($key, $value, $time)
     {
-        return $this->usingDatabase(function () use ($key, $value, $time) {
-            $stmt = $this->db->prepare("INSERT INTO \"$this->table_name\" VALUES (:k, :v, :e)");
+        $stmt = $this->db->prepare("INSERT INTO \"$this->table_name\" VALUES (:k, :v, :e)");
 
-            $stmt->bindParam('k', $key, SQLITE3_TEXT);
-            $stmt->bindParam('v', $value, SQLITE3_TEXT);
-            $stmt->bindParam('e', $time, SQLITE3_INTEGER);
+        $stmt->bindParam('k', $key, SQLITE3_TEXT);
+        $stmt->bindParam('v', $value, SQLITE3_TEXT);
+        $stmt->bindParam('e', $time, SQLITE3_INTEGER);
 
-            return (bool) $stmt->execute();
-        });
+        return (bool) $stmt->execute();
     }
 
     public function remove($key)
     {
-        return $this->usingDatabase(function () use ($key) {
-            if (!$this->has($key)) {
-                return true;
-            }
+        if (!$this->has($key)) {
+            return true;
+        }
 
-            $stmt = $this->db->prepare("DELETE FROM \"$this->table_name\" WHERE k = :k");
+        $stmt = $this->db->prepare("DELETE FROM \"$this->table_name\" WHERE k = :k");
 
-            $stmt->bindParam('k', $key, SQLITE3_TEXT);
+        $stmt->bindParam('k', $key, SQLITE3_TEXT);
 
-            return (bool) $stmt->execute();
-        });
+        return (bool) $stmt->execute();
     }
 
     public function has($key)
@@ -116,26 +109,22 @@ class SQLite implements IDriver
 
     public function get($key)
     {
-        return $this->usingDatabase(function () use ($key) {
-            $stmt = $this->db->prepare("SELECT * FROM \"$this->table_name\" WHERE k = :k");
+        $stmt = $this->db->prepare("SELECT * FROM \"$this->table_name\" WHERE k = :k");
 
-            $stmt->bindParam('k', $key, SQLITE3_TEXT);
+        $stmt->bindParam('k', $key, SQLITE3_TEXT);
 
-            $results = $stmt->execute()->fetchArray();
+        $results = $stmt->execute()->fetchArray();
 
-            if (count($results) < 1) {
-                return null;
-            }
+        if (count($results) < 1) {
+            return null;
+        }
 
-            return $results[0]['v'];
-        });
+        return $results[0]['v'];
     }
 
     public function clear()
     {
-        return $this->usingDatabase(function () {
-            return (bool) $this->db->query("DELETE FROM \"$this->table_name\"");
-        });
+        return (bool) $this->db->query("DELETE FROM \"$this->table_name\"");
     }
 
     /**
@@ -145,26 +134,8 @@ class SQLite implements IDriver
      */
     private function clearExpiredItems()
     {
-        return $this->usingDatabase(function () {
-            return (bool) $this->db->query(
-                "DELETE FROM \"$this->table_name\" WHERE e <= strftime('%s','now') AND e > 0"
-            );
-        });
-    }
-
-    /**
-     * @param \Closure $callback
-     *
-     * @return mixed
-     */
-    private function usingDatabase($callback)
-    {
-        $this->db->open($this->file);
-
-        $result = $callback();
-
-        $this->db->close();
-
-        return $result;
+        return (bool) $this->db->query(
+            "DELETE FROM \"$this->table_name\" WHERE e <= strftime('%s','now') AND e > 0"
+        );
     }
 }
