@@ -80,7 +80,6 @@ class SQLite implements IDriver
         $this->db->close();
     }
 
-
     public function put($key, $value, $time)
     {
         return $this->usingDatabase(function () use ($key, $value, $time) {
