@@ -77,6 +77,10 @@ class SQLite implements IDriver
 
     public function put($key, $value, $time)
     {
+        if ($this->has($key)) {
+            $this->remove($key);
+        }
+
         $stmt = $this->db->prepare("INSERT INTO \"$this->table_name\" VALUES (?, ?, ?)");
 
         $stmt->bindParam(1, $key, SQLITE3_TEXT);
