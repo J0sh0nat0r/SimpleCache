@@ -13,8 +13,8 @@ use J0sh0nat0r\SimpleCache\IDriver;
  * File driver.
  *
  * Accepted options:
- * dir:            (required) The directory to store cache files in
- * encryption_key: (optional) The key to use for encrypting data, if not set data will NOT be encrypted
+ *   * dir:            (required) The directory to store cache files in.
+ *   * encryption_key: (optional) If specified, will be used to encrypt data.
  */
 class File implements IDriver
 {

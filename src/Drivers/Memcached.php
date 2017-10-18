@@ -14,7 +14,7 @@ use J0sh0nat0r\SimpleCache\IDriver;
  *
  *
  * Accepted options:
- * servers: Array of servers
+ *   * servers: Array of servers
  */
 class Memcached implements IDriver
 {

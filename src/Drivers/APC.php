@@ -11,7 +11,7 @@ use J0sh0nat0r\SimpleCache\IDriver;
 /**
  * APC Driver.
  *
- * Accepted options: None
+ * Accepted options: None!
  */
 class APC implements IDriver
 {

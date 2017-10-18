@@ -10,6 +10,13 @@ use J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException;
 use J0sh0nat0r\SimpleCache\IDriver;
 use SQLite3;
 
+/**
+ * SQLite driver.
+ *
+ * Accepted options:
+ *   * file           (required) File to store the database in.
+ *   * encryption_key (optional) If specified, will be used to encrypt data.
+ */
 class SQLite implements IDriver
 {
     private $db;

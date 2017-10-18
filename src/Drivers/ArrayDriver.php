@@ -10,7 +10,7 @@ use J0sh0nat0r\SimpleCache\IDriver;
 /**
  * Array driver for unit tests.
  *
- * Accepted options: None
+ * Accepted options: None!
  */
 class ArrayDriver implements IDriver
 {
