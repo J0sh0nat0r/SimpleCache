@@ -117,8 +117,7 @@ class SQLite implements IDriver
         }
 
         if ($results['e'] <= time()) {
-            $this->remove($key);
-
+            // Items will persist until the next instantiation, could be an issue?
             return null;
         }
 
