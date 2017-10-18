@@ -77,6 +77,8 @@ class SQLite implements IDriver
 
     public function put($key, $value, $time)
     {
+        $time += time();
+
         if ($this->has($key)) {
             $this->remove($key);
         }
