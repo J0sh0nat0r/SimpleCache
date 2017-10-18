@@ -18,7 +18,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
     /**
      * @var Cache
      */
-    protected $cache;
+    private $cache;
 
     public function setUp()
     {
