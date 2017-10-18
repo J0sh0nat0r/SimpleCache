@@ -97,12 +97,12 @@ class File implements IDriver
 
     /**
      * @param string $key
-     * @param mixed $value
-     * @param int $time
-     *
-     * @return bool
+     * @param mixed  $value
+     * @param int    $time
      *
      * @throws \Exception
+     *
+     * @return bool
      */
     public function put($key, $value, $time)
     {
@@ -156,9 +156,9 @@ class File implements IDriver
     /**
      * @param string $key
      *
-     * @return bool|null|string
-     *
      * @throws \Exception
+     *
+     * @return bool|null|string
      */
     public function get($key)
     {
