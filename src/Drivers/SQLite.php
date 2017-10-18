@@ -62,7 +62,7 @@ class SQLite implements IDriver
             $encryption_key = $options['encryption_key'];
         }
 
-        $this->db = new SQLite3($options['file'], null, $encryption_key);
+        $this->db = new SQLite3($options['file'], SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE, $encryption_key);
 
         if (!$this->db->query(
             "CREATE TABLE IF NOT EXISTS \"$this->table_name\" (k TEXT PRIMARY KEY, v TEXT, e INT)"
@@ -73,8 +73,6 @@ class SQLite implements IDriver
         if (!$this->clearExpiredItems()) {
             throw new DriverInitializationFailedException('Failed to clear expired items');
         }
-
-        $this->db->close();
     }
 
     public function put($key, $value, $time)
@@ -112,9 +110,9 @@ class SQLite implements IDriver
 
         $stmt->bindParam(1, $key, SQLITE3_TEXT);
 
-        $results = $stmt->execute()->fetchArray();
+        $results = $stmt->execute()->fetchArray(SQLITE3_ASSOC);
 
-        if (count($results) < 1) {
+        if (!is_array($results)) {
             return null;
         }
 
