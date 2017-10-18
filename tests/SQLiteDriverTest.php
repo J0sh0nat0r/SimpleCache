@@ -10,6 +10,8 @@ use J0sh0nat0r\SimpleCache\Drivers\SQLite as SQLiteDriver;
 /**
  * Tests the SQLite driver.
  *
+ * @requires extension sqlite3
+ *
  * @covers \J0sh0nat0r\SimpleCache\Drivers\SQLite
  */
 class SQLiteDriverTest extends DriverTestCase
