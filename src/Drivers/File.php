@@ -291,7 +291,9 @@ class File implements IDriver
     private function forAll($callback)
     {
         foreach (glob($this->dir.'/*', GLOB_ONLYDIR) as $item) {
-            $callback($item);
+            if($this->isValid($item)) {
+                $callback($item);
+            }
         }
     }
 
