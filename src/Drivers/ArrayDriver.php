@@ -22,7 +22,7 @@ class ArrayDriver implements IDriver
     private $items;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function put($key, $value, $time)
     {
@@ -35,7 +35,7 @@ class ArrayDriver implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function has($key)
     {
@@ -57,7 +57,7 @@ class ArrayDriver implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function get($key)
     {
@@ -69,7 +69,7 @@ class ArrayDriver implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function remove($key)
     {
@@ -79,7 +79,7 @@ class ArrayDriver implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function clear()
     {

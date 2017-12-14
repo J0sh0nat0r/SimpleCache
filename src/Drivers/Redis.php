@@ -94,7 +94,7 @@ class Redis implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function put($key, $value, $time)
     {
@@ -106,7 +106,7 @@ class Redis implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function has($key)
     {
@@ -115,7 +115,7 @@ class Redis implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function get($key)
     {
@@ -129,7 +129,7 @@ class Redis implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function remove($key)
     {
@@ -137,7 +137,7 @@ class Redis implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function clear()
     {
