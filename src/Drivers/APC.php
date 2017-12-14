@@ -39,7 +39,7 @@ class APC implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function put($key, $value, $time)
     {
@@ -49,7 +49,7 @@ class APC implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function has($key)
     {
@@ -59,7 +59,7 @@ class APC implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function get($key)
     {
@@ -76,7 +76,7 @@ class APC implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function remove($key)
     {
@@ -86,7 +86,7 @@ class APC implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function clear()
     {
