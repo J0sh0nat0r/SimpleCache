@@ -31,6 +31,7 @@ class PCI
      * @param $name
      *
      * @return bool
+     * @throws \J0sh0nat0r\SimpleCache\Exceptions\InvalidKeyException
      */
     public function __isset($name)
     {
@@ -41,6 +42,7 @@ class PCI
      * @param $name
      *
      * @return mixed
+     * @throws \J0sh0nat0r\SimpleCache\Exceptions\InvalidKeyException
      */
     public function __get($name)
     {
@@ -50,6 +52,7 @@ class PCI
     /**
      * @param $name
      * @param $value
+     * @throws \J0sh0nat0r\SimpleCache\Exceptions\InvalidKeyException
      */
     public function __set($name, $value)
     {
@@ -58,6 +61,7 @@ class PCI
 
     /**
      * @param $name
+     * @throws \J0sh0nat0r\SimpleCache\Exceptions\InvalidKeyException
      */
     public function __unset($name)
     {
