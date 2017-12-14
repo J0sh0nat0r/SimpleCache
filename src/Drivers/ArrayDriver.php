@@ -21,6 +21,9 @@ class ArrayDriver implements IDriver
      */
     private $items;
 
+    /**
+     * @inheritdoc
+     */
     public function put($key, $value, $time)
     {
         $this->items[$key] = [
@@ -31,6 +34,9 @@ class ArrayDriver implements IDriver
         return true;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function has($key)
     {
         if (!isset($this->items[$key])) {
@@ -50,6 +56,9 @@ class ArrayDriver implements IDriver
         return true;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function get($key)
     {
         if ($this->has($key)) {
@@ -59,6 +68,9 @@ class ArrayDriver implements IDriver
         return null;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function remove($key)
     {
         unset($this->items[$key]);
@@ -66,6 +78,9 @@ class ArrayDriver implements IDriver
         return true;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function clear()
     {
         $this->items = [];

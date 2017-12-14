@@ -25,6 +25,14 @@ class Memcached implements IDriver
      */
     private $pool;
 
+    /**
+     * Memcached constructor.
+     *
+     * @param $options
+     *
+     * @throws DriverInitializationFailedException
+     * @throws DriverOptionsInvalidException
+     */
     public function __construct($options)
     {
         $this->pool = new \Memcached();
@@ -70,6 +78,9 @@ class Memcached implements IDriver
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function put($key, $value, $time)
     {
         $expiration = $time > 0 ? time() + $time : 0;
@@ -77,6 +88,9 @@ class Memcached implements IDriver
         return $this->pool->set($key, $value, $expiration);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function has($key)
     {
         $keys = $this->pool->getAllKeys();
@@ -88,6 +102,9 @@ class Memcached implements IDriver
         return array_search($key, $keys) !== false;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function get($key)
     {
         $result = $this->pool->get($key);
@@ -99,11 +116,17 @@ class Memcached implements IDriver
         return $result;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function remove($key)
     {
         return $this->pool->delete($key);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function clear()
     {
         return $this->pool->flush();

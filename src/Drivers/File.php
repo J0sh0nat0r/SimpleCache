@@ -96,13 +96,7 @@ class File implements IDriver
     }
 
     /**
-     * @param string $key
-     * @param mixed  $value
-     * @param int    $time
-     *
-     * @throws \Exception
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function put($key, $value, $time)
     {
@@ -138,6 +132,9 @@ class File implements IDriver
         return boolval($success);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function has($key)
     {
         $dir = $this->getDir($key);
@@ -154,11 +151,7 @@ class File implements IDriver
     }
 
     /**
-     * @param string $key
-     *
-     * @throws \Exception
-     *
-     * @return bool|null|string
+     * @inheritdoc
      */
     public function get($key)
     {
@@ -189,6 +182,9 @@ class File implements IDriver
         return $value;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function remove($key)
     {
         $dir = $this->getDir($key);
@@ -200,6 +196,9 @@ class File implements IDriver
         return $this->delDir($this->getDir($key));
     }
 
+    /**
+     * @inheritdoc
+     */
     public function clear()
     {
         $this->forAll(function ($item) {

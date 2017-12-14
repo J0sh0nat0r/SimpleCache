@@ -26,6 +26,14 @@ class Redis implements IDriver
      */
     private $redis;
 
+    /**
+     * Redis constructor.
+     *
+     * @param $options
+     *
+     * @throws DriverInitializationFailedException
+     * @throws DriverOptionsInvalidException
+     */
     public function __construct($options)
     {
         if (!isset($options['host'])) {
@@ -85,6 +93,9 @@ class Redis implements IDriver
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function put($key, $value, $time)
     {
         if ($time === 0) {
@@ -94,12 +105,18 @@ class Redis implements IDriver
         return $this->redis->setex($key, $time, $value);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function has($key)
     {
         // Returns an int on PHP 7.2
         return (bool) $this->redis->exists($key);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function get($key)
     {
         $value = $this->redis->get($key);
@@ -111,11 +128,17 @@ class Redis implements IDriver
         return $value;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function remove($key)
     {
         return $this->redis->del($key) === 1;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function clear()
     {
         return $this->redis->flushDB();

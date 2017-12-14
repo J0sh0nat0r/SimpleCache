@@ -22,6 +22,11 @@ class APC implements IDriver
      */
     private $prefix;
 
+    /**
+     * APC constructor.
+     *
+     * @throws DriverInitializationFailedException
+     */
     public function __construct()
     {
         if (extension_loaded('apcu')) {
@@ -33,6 +38,9 @@ class APC implements IDriver
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function put($key, $value, $time)
     {
         $function = $this->prefix.'store';
@@ -40,6 +48,9 @@ class APC implements IDriver
         return $function($key, $value, $time);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function has($key)
     {
         $function = $this->prefix.'exists';
@@ -47,6 +58,9 @@ class APC implements IDriver
         return $function($key);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function get($key)
     {
         $function = $this->prefix.'fetch';
@@ -61,6 +75,9 @@ class APC implements IDriver
         return $result;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function remove($key)
     {
         $function = $this->prefix.'delete';
@@ -68,6 +85,9 @@ class APC implements IDriver
         return $function($key);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function clear()
     {
         if ($this->prefix === 'apc_') {

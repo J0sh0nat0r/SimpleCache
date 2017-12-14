@@ -75,6 +75,9 @@ class SQLite implements IDriver
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function put($key, $value, $time)
     {
         if ($this->has($key)) {
@@ -92,6 +95,9 @@ class SQLite implements IDriver
         return (bool) $stmt->execute();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function remove($key)
     {
         if (!$this->has($key)) {
@@ -105,11 +111,17 @@ class SQLite implements IDriver
         return (bool) $stmt->execute();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function has($key)
     {
         return $this->get($key) !== null;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function get($key)
     {
         $stmt = $this->db->prepare("SELECT * FROM \"$this->table_name\" WHERE k = ?");
@@ -130,6 +142,9 @@ class SQLite implements IDriver
         return $results['v'];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function clear()
     {
         return (bool) $this->db->query("DELETE FROM \"$this->table_name\"");
