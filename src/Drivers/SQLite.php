@@ -76,7 +76,7 @@ class SQLite implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function put($key, $value, $time)
     {
@@ -96,7 +96,7 @@ class SQLite implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function remove($key)
     {
@@ -112,7 +112,7 @@ class SQLite implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function has($key)
     {
@@ -120,7 +120,7 @@ class SQLite implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function get($key)
     {
@@ -143,7 +143,7 @@ class SQLite implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function clear()
     {

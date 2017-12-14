@@ -79,7 +79,7 @@ class Memcached implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function put($key, $value, $time)
     {
@@ -89,7 +89,7 @@ class Memcached implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function has($key)
     {
@@ -103,7 +103,7 @@ class Memcached implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function get($key)
     {
@@ -117,7 +117,7 @@ class Memcached implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function remove($key)
     {
@@ -125,7 +125,7 @@ class Memcached implements IDriver
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function clear()
     {
