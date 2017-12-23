@@ -91,7 +91,11 @@ class Cache
     {
         $this->validateKey($key);
 
-        $time = empty($time) ? self::$DEFAULT_TIME : $time;
+        if (!is_int($time) && !is_null($time)) {
+            throw new \InvalidArgumentException('`time` must be an integer or null');
+        }
+
+        $time = is_null($time) ? self::$DEFAULT_TIME : max(0, $time);
 
         if (is_array($key)) {
             $time = is_null($value) ? $time : $value;
@@ -121,10 +125,11 @@ class Cache
     /**
      * Store a item (or an array of items) in the cache indefinitely.
      *
-     * @param string|array $key   The key to store the item under (can also be a `key => value` array)
-     * @param mixed        $value Value of the item (leave null if $key is a `key => value` array)
+     * @param string|array $key The key to store the item under (can also be a `key => value` array)
+     * @param mixed $value Value of the item (leave null if $key is a `key => value` array)
      *
      * @throws InvalidKeyException
+     * @throws \InvalidArgumentException
      *
      * @return bool|bool[]
      */
