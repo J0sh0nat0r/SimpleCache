@@ -125,8 +125,8 @@ class Cache
     /**
      * Store a item (or an array of items) in the cache indefinitely.
      *
-     * @param string|array $key The key to store the item under (can also be a `key => value` array)
-     * @param mixed $value Value of the item (leave null if $key is a `key => value` array)
+     * @param string|array $key   The key to store the item under (can also be a `key => value` array)
+     * @param mixed        $value Value of the item (leave null if $key is a `key => value` array)
      *
      * @throws InvalidKeyException
      * @throws \InvalidArgumentException
