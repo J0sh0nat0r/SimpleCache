@@ -201,9 +201,15 @@ class File implements IDriver
      */
     public function clear()
     {
-        $this->forAll(function ($item) {
-            $this->delDir($item);
+        $success = true;
+
+        $this->forAll(function ($item) use (&$success) {
+            if (!$this->delDir($item)) {
+                $success = false;
+            }
         });
+
+        return $success;
     }
 
     /**
