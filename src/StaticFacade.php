@@ -16,10 +16,6 @@ namespace J0sh0nat0r\SimpleCache;
  * @method  static mixed        pull(string|string[] $key, mixed $default = null)
  * @method  static bool|bool[]  remove(string|string[] $key)
  * @method  static bool         clear()
- *
- * @category  Class
- *
- * @author    Josh P
  */
 class StaticFacade
 {
