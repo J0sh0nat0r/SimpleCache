@@ -3,6 +3,14 @@
   "description": "A simple yet modular PHP caching library",
   "type": "library",
   "license": "MIT",
+  "keywords": [
+    "cache",
+    "redis",
+    "APC",
+    "memcache",
+    "file cache",
+    "sqlite cache"
+  ],
   "authors": [
     {
       "name": "J0sh0nat0r",
