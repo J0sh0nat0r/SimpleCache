@@ -5,19 +5,22 @@
 
 namespace J0sh0nat0r\SimpleCache\Tests;
 
+use J0sh0nat0r\SimpleCache\IDriver;
+use PHPUnit\Framework\TestCase;
+
 /**
  * Tests a driver
  */
-abstract class DriverTestCase extends \PHPUnit_Framework_TestCase
+abstract class DriverTestCase extends TestCase
 {
     /**
      * An instance of the driver to test.
      *
-     * @var \J0sh0nat0r\SimpleCache\IDriver
+     * @var IDriver
      */
     protected $driver;
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->driver->clear();
 

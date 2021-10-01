@@ -6,6 +6,7 @@
 namespace J0sh0nat0r\SimpleCache\Internal;
 
 use J0sh0nat0r\SimpleCache\Cache;
+use J0sh0nat0r\SimpleCache\Exceptions\InvalidKeyException;
 
 /**
  * Property-Cache interface.
@@ -15,7 +16,7 @@ class PCI
     /**
      * @var Cache
      */
-    private $cache;
+    private Cache $cache;
 
     /**
      * OCI constructor.
@@ -30,9 +31,9 @@ class PCI
     /**
      * @param $name
      *
-     * @throws \J0sh0nat0r\SimpleCache\Exceptions\InvalidKeyException
-     *
      * @return bool
+     * @throws InvalidKeyException
+     *
      */
     public function __isset($name)
     {
@@ -42,9 +43,9 @@ class PCI
     /**
      * @param $name
      *
-     * @throws \J0sh0nat0r\SimpleCache\Exceptions\InvalidKeyException
-     *
      * @return mixed
+     * @throws InvalidKeyException
+     *
      */
     public function __get($name)
     {
@@ -55,7 +56,7 @@ class PCI
      * @param $name
      * @param $value
      *
-     * @throws \J0sh0nat0r\SimpleCache\Exceptions\InvalidKeyException
+     * @throws InvalidKeyException
      */
     public function __set($name, $value)
     {
@@ -65,7 +66,7 @@ class PCI
     /**
      * @param $name
      *
-     * @throws \J0sh0nat0r\SimpleCache\Exceptions\InvalidKeyException
+     * @throws InvalidKeyException
      */
     public function __unset($name)
     {

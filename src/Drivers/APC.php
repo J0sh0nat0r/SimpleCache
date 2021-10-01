@@ -20,7 +20,7 @@ class APC implements IDriver
      *
      * @var string
      */
-    private $prefix;
+    private string $prefix;
 
     /**
      * APC constructor.
@@ -41,9 +41,9 @@ class APC implements IDriver
     /**
      * {@inheritdoc}
      */
-    public function put($key, $value, $time)
+    public function put(string $key, $value, $time): bool
     {
-        $function = $this->prefix.'store';
+        $function = $this->prefix . 'store';
 
         return $function($key, $value, $time);
     }
@@ -51,9 +51,9 @@ class APC implements IDriver
     /**
      * {@inheritdoc}
      */
-    public function has($key)
+    public function has(string $key): bool
     {
-        $function = $this->prefix.'exists';
+        $function = $this->prefix . 'exists';
 
         return $function($key);
     }
@@ -61,9 +61,9 @@ class APC implements IDriver
     /**
      * {@inheritdoc}
      */
-    public function get($key)
+    public function get(string $key): ?string
     {
-        $function = $this->prefix.'fetch';
+        $function = $this->prefix . 'fetch';
 
         $success = false;
         $result = $function($key, $success);
@@ -78,9 +78,9 @@ class APC implements IDriver
     /**
      * {@inheritdoc}
      */
-    public function remove($key)
+    public function remove(string $key): bool
     {
-        $function = $this->prefix.'delete';
+        $function = $this->prefix . 'delete';
 
         return $function($key);
     }

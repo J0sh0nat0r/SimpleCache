@@ -5,9 +5,11 @@
 
 namespace J0sh0nat0r\SimpleCache\Exceptions;
 
+use Exception;
+
 /**
  * Exception thrown when driver initialization fails.
  */
-class DriverInitializationFailedException extends \Exception
+class DriverInitializationFailedException extends Exception
 {
 }

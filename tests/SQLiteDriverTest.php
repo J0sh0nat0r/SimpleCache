@@ -16,16 +16,16 @@ class SQLiteDriverTest extends DriverTestCase
 {
     private $file;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->file = sys_get_temp_dir().'/simple-cache-test-database.sqlite3';
+        $this->file = sys_get_temp_dir() . '/simple-cache-test-database.sqlite3';
 
         $this->driver = new SQLiteDriver([
             'file' => $this->file
         ]);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -34,7 +34,7 @@ class SQLiteDriverTest extends DriverTestCase
 
     public function testFileCreation()
     {
-        $file = sys_get_temp_dir().'/sc-'.sha1(rand(100, 200)).'.sqlite3';
+        $file = sys_get_temp_dir() . '/sc-' . sha1(rand(100, 200)) . '.sqlite3';
 
         new SQLiteDriver([
             'file' => $file

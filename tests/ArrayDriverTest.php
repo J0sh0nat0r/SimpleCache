@@ -14,7 +14,7 @@ use J0sh0nat0r\SimpleCache\Drivers\ArrayDriver;
  */
 class ArrayDriverTest extends DriverTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->driver = new ArrayDriver();
     }

@@ -16,16 +16,16 @@ class FileDriverTest extends DriverTestCase
 {
     protected $dir;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->dir = sys_get_temp_dir().'/simple-cache-test-dir';
+        $this->dir = sys_get_temp_dir() . '/simple-cache-test-dir';
 
         $this->driver = new FileDriver([
             'dir' => $this->dir
         ]);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -34,7 +34,7 @@ class FileDriverTest extends DriverTestCase
 
     public function testDirectoryCreation()
     {
-        $dir = sys_get_temp_dir().'/sc-'.sha1(rand(0, 1000));
+        $dir = sys_get_temp_dir() . '/sc-' . sha1(rand(0, 1000));
 
         $this->assertFalse(is_dir($dir));
 

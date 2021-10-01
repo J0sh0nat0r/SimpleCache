@@ -23,7 +23,7 @@ class Memcached implements IDriver
      *
      * @var \Memcached
      */
-    private $pool;
+    private \Memcached $pool;
 
     /**
      * Memcached constructor.
@@ -56,13 +56,13 @@ class Memcached implements IDriver
                 throw new DriverOptionsInvalidException('The host option is required for each server');
             }
 
-            $server['port'] = isset($server['port']) ? $server['port'] : 11211;
+            $server['port'] = $server['port'] ?? 11211;
 
             if (!is_numeric($server['port'])) {
                 throw new DriverOptionsInvalidException('Server port option must be numeric');
             }
 
-            $server['weight'] = isset($server['weight']) ? $server['weight'] : 0;
+            $server['weight'] = $server['weight'] ?? 0;
 
             if (!is_numeric($server['weight'])) {
                 throw new DriverOptionsInvalidException('Server weight option must be numeric');
@@ -72,7 +72,7 @@ class Memcached implements IDriver
 
             if (!$success) {
                 throw new DriverInitializationFailedException(
-                    'Failed to add a Memcached server: '.$this->pool->getResultMessage()
+                    'Failed to add a Memcached server: ' . $this->pool->getResultMessage()
                 );
             }
         }
@@ -81,7 +81,7 @@ class Memcached implements IDriver
     /**
      * {@inheritdoc}
      */
-    public function put($key, $value, $time)
+    public function put(string $key, $value, $time): bool
     {
         $expiration = $time > 0 ? time() + $time : 0;
 
@@ -91,7 +91,7 @@ class Memcached implements IDriver
     /**
      * {@inheritdoc}
      */
-    public function has($key)
+    public function has(string $key): bool
     {
         $keys = $this->pool->getAllKeys();
 
@@ -99,13 +99,13 @@ class Memcached implements IDriver
             return false;
         }
 
-        return array_search($key, $keys) !== false;
+        return in_array($key, $keys, true);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function get($key)
+    public function get(string $key): ?string
     {
         $result = $this->pool->get($key);
 
@@ -119,7 +119,7 @@ class Memcached implements IDriver
     /**
      * {@inheritdoc}
      */
-    public function remove($key)
+    public function remove(string $key): bool
     {
         return $this->pool->delete($key);
     }

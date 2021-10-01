@@ -7,45 +7,35 @@ namespace J0sh0nat0r\SimpleCache\Tests;
 
 use J0sh0nat0r\SimpleCache\Cache;
 use J0sh0nat0r\SimpleCache\Drivers\ArrayDriver;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the PCI.
  *
  * @covers \J0sh0nat0r\SimpleCache\Internal\PCI
  */
-class PCITest extends \PHPUnit_Framework_TestCase
+class PCITest extends TestCase
 {
     /**
      * @var Cache
      */
     private $cache;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->cache = new Cache(ArrayDriver::class);
 
         $this->cache->remember_values = false;
     }
 
-    public function testStorage()
-    {
-        $this->cache->items->foo = 'bar';
-    }
-
-    /**
-     * @depends testStorage
-     */
     public function testIsset()
     {
-        $this->assertFalse(isset($this->cache->items->foo));
-
         $this->cache->items->foo = 'bar';
 
         $this->assertTrue(isset($this->cache->items->foo));
     }
 
     /**
-     * @depends testStorage
      * @depends testIsset
      */
     public function testRetrieval()
@@ -58,14 +48,11 @@ class PCITest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends testStorage
      * @depends testIsset
      */
     public function testRemoval()
     {
         $this->cache->items->foo = 'bar';
-
-        $this->assertTrue(isset($this->cache->items->foo));
 
         unset($this->cache->items->foo);
 

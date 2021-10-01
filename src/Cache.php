@@ -5,6 +5,8 @@
 
 namespace J0sh0nat0r\SimpleCache;
 
+use Closure;
+use InvalidArgumentException;
 use J0sh0nat0r\SimpleCache\Exceptions\InvalidKeyException;
 use J0sh0nat0r\SimpleCache\Internal\PCI;
 
@@ -18,7 +20,7 @@ class Cache
      *
      * @var int
      */
-    public static $DEFAULT_TIME = 3600;
+    public static int $DEFAULT_TIME = 3600;
 
     /**
      * If set to true values that are fetched / stored during the
@@ -26,7 +28,7 @@ class Cache
      *
      * @var bool
      */
-    public $remember_values = true;
+    public bool $remember_values = true;
 
     /**
      * Provides a Property based Cache Interface (or PCI) an
@@ -34,7 +36,7 @@ class Cache
      *
      * @var PCI
      */
-    public $items;
+    public PCI $items;
 
     /**
      * The driver instance.
@@ -48,19 +50,23 @@ class Cache
      *
      * @var array
      */
-    private $loaded = [];
+    private array $loaded = [];
 
     /**
      * Cache constructor.
      *
-     * @param string     $driver         The driver to use
-     * @param null|array $driver_options Options to pass to the driver
+     * @param string $driver The driver to use
+     * @param array|null $driver_options Options to pass to the driver
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    public function __construct($driver, $driver_options = null)
+    public function __construct(string $driver, array $driver_options = null)
     {
         $this->items = new PCI($this);
+
+        if (!is_a($driver, IDriver::class, true)) {
+            throw new InvalidArgumentException('The `driver` argument must an `IDriver`');
+        }
 
         if (is_null($driver_options)) {
             $this->driver = new $driver();
@@ -69,7 +75,7 @@ class Cache
         }
 
         if (!is_array($driver_options)) {
-            throw new \InvalidArgumentException('The `driver_options` argument must be either `null` or an `array`');
+            throw new InvalidArgumentException('The `driver_options` argument must be either `null` or an `array`');
         }
 
         $this->driver = new $driver($driver_options);
@@ -78,21 +84,21 @@ class Cache
     /**
      * Store a value (or an array of key-value pairs) in the cache.
      *
-     * @param string|array $key   The key to store the item under(can also be a `key => value` array)
-     * @param mixed        $value Value of the item (can also be the time in the case that $key is an array)
-     * @param int          $time  Time to store the item for (can also be null in the case that $key is an array)
-     *
-     * @throws \InvalidArgumentException
-     * @throws InvalidKeyException
+     * @param string|array $key The key to store the item under(can also be a `key => value` array)
+     * @param mixed $value Value of the item (can also be the time in the case that $key is an array)
+     * @param int|null $time Time to store the item for (can also be null in the case that $key is an array)
      *
      * @return bool|bool[]
+     * @throws InvalidKeyException
+     *
+     * @throws InvalidArgumentException
      */
-    public function store($key, $value = null, $time = null)
+    public function store($key, $value = null, int $time = null)
     {
         $this->validateKey($key);
 
         if (!is_int($time) && !is_null($time)) {
-            throw new \InvalidArgumentException('`time` must be an integer or null');
+            throw new InvalidArgumentException('`time` must be an integer or null');
         }
 
         $time = is_null($time) ? self::$DEFAULT_TIME : max(0, $time);
@@ -102,18 +108,18 @@ class Cache
             $values = $key;
 
             $successes = [];
-            foreach ($values as $key => $value) {
-                $successes[$key] = $this->store($key, $value, $time);
+            foreach ($values as $subKey => $subValue) {
+                $successes[$subKey] = $this->store($subKey, $subValue, $time);
             }
 
             return $successes;
         }
 
         if (!is_numeric($time)) {
-            throw new \InvalidArgumentException('Time must be numeric');
+            throw new InvalidArgumentException('Time must be numeric');
         }
 
-        $success = $this->driver->put($key, serialize($value), intval($time));
+        $success = $this->driver->put($key, serialize($value), (int)$time);
 
         if ($success && $this->remember_values) {
             $this->loaded[$key] = $value;
@@ -125,13 +131,13 @@ class Cache
     /**
      * Store a item (or an array of items) in the cache indefinitely.
      *
-     * @param string|array $key   The key to store the item under (can also be a `key => value` array)
-     * @param mixed        $value Value of the item (leave null if $key is a `key => value` array)
-     *
-     * @throws InvalidKeyException
-     * @throws \InvalidArgumentException
+     * @param string|array $key The key to store the item under (can also be a `key => value` array)
+     * @param mixed $value Value of the item (leave null if $key is a `key => value` array)
      *
      * @return bool|bool[]
+     * @throws InvalidArgumentException
+     *
+     * @throws InvalidKeyException
      */
     public function forever($key, $value = null)
     {
@@ -146,16 +152,15 @@ class Cache
      * Try to find a value in the cache and return it,
      * if we can't it will be calculated with the provided closure.
      *
-     * @param string   $key      Key of the item to remember
-     * @param int      $time     Time to remember the item for
-     * @param \Closure $generate Function used to generate the value
-     * @param mixed    $default  Default value in case an item isn't found and $generate returns null (can be a callback)
-     *
-     * @throws InvalidKeyException
+     * @param string $key Key of the item to remember
+     * @param int $time Time to remember the item for
+     * @param Closure $generate Function used to generate the value
+     * @param mixed $default Default value in case an item isn't found and $generate returns null (can be a callback)
      *
      * @return mixed
+     * @throws InvalidKeyException
      */
-    public function remember($key, $time, $generate, $default = null)
+    public function remember(string $key, int $time, Closure $generate, $default = null)
     {
         $this->validateKey($key);
 
@@ -163,7 +168,7 @@ class Cache
             return $this->get($key);
         }
 
-        $value = call_user_func($generate, $key);
+        $value = $generate($key);
 
         if (!is_null($value)) {
             $this->store($key, $value, $time);
@@ -172,7 +177,7 @@ class Cache
         }
 
         if (is_callable($default) && !is_string($default)) {
-            return call_user_func($default, $key);
+            return $default($key);
         }
 
         return $default;
@@ -183,9 +188,8 @@ class Cache
      *
      * @param string|string[] $key The key (or keys) to search for
      *
-     * @throws InvalidKeyException
-     *
      * @return bool|bool[]
+     * @throws InvalidKeyException
      */
     public function has($key)
     {
@@ -195,8 +199,8 @@ class Cache
             $keys = $key;
 
             $has = [];
-            foreach ($keys as $key) {
-                $has[$key] = $this->has($key);
+            foreach ($keys as $subKey) {
+                $has[$subKey] = $this->has($subKey);
             }
 
             return $has;
@@ -212,12 +216,11 @@ class Cache
     /**
      * Fetch a value (or an multiple values) from the cache.
      *
-     * @param string|string[] $key     The key (or keys) to retrieve the values of
-     * @param mixed           $default Default value in case an item isn't found (can be a callback)
-     *
-     * @throws InvalidKeyException
+     * @param string|string[] $key The key (or keys) to retrieve the values of
+     * @param mixed $default Default value in case an item isn't found (can be a callback)
      *
      * @return mixed
+     * @throws InvalidKeyException
      */
     public function get($key, $default = null)
     {
@@ -227,8 +230,8 @@ class Cache
             $keys = $key;
 
             $results = [];
-            foreach ($keys as $key) {
-                $results[$key] = $this->get($key, $default);
+            foreach ($keys as $subKey) {
+                $results[$subKey] = $this->get($subKey, $default);
             }
 
             return $results;
@@ -242,13 +245,13 @@ class Cache
 
         if (is_null($result)) {
             if (is_callable($default) && !is_string($default)) {
-                return call_user_func($default, $key);
+                return $default($key);
             }
 
             return $default;
         }
 
-        $result = unserialize($result);
+        $result = unserialize($result, ['allowed_classes' => true]);
 
         if ($this->remember_values) {
             $this->loaded[$key] = $result;
@@ -260,12 +263,11 @@ class Cache
     /**
      * Fetch an item (or multiple items) from the cache, then remove it.
      *
-     * @param string|string[] $key     Key of the item to pull (can also be an array of keys)
-     * @param mixed           $default Default value in case an item isn't found (can be a callback)
-     *
-     * @throws InvalidKeyException
+     * @param string|string[] $key Key of the item to pull (can also be an array of keys)
+     * @param mixed $default Default value in case an item isn't found (can be a callback)
      *
      * @return mixed
+     * @throws InvalidKeyException
      */
     public function pull($key, $default = null)
     {
@@ -283,9 +285,8 @@ class Cache
      *
      * @param string|string[] $key Key of the item to remove (can also be an array of keys)
      *
-     * @throws InvalidKeyException
-     *
      * @return bool|bool[]
+     * @throws InvalidKeyException
      */
     public function remove($key)
     {
@@ -295,8 +296,8 @@ class Cache
             $keys = $key;
 
             $successes = [];
-            foreach ($keys as $key) {
-                $successes[$key] = $this->remove($key);
+            foreach ($keys as $subKey) {
+                $successes[$subKey] = $this->remove($subKey);
             }
 
             return $successes;
@@ -314,7 +315,7 @@ class Cache
      *
      * @return bool
      */
-    public function clear()
+    public function clear(): bool
     {
         $this->loaded = [];
 
@@ -326,11 +327,10 @@ class Cache
      *
      * @param mixed $key Key to validate
      *
-     * @throws InvalidKeyException
-     *
      * @return void
+     * @throws InvalidKeyException
      */
-    private function validateKey($key)
+    private function validateKey($key): void
     {
         if (!is_array($key) && !is_string($key)) {
             throw new InvalidKeyException('The provided key was invalid');

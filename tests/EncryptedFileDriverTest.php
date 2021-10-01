@@ -12,9 +12,9 @@ use J0sh0nat0r\SimpleCache\Drivers\File as FileDriver;
  */
 class EncryptedFileDriverTest extends FileDriverTest
 {
-    public function setUp()
+    public function setUp(): void
     {
-        $this->dir = sys_get_temp_dir().'/simple-cache-test-dir';
+        $this->dir = sys_get_temp_dir() . '/simple-cache-test-dir';
 
         $this->driver = new FileDriver([
             'dir' => $this->dir,
@@ -26,8 +26,8 @@ class EncryptedFileDriverTest extends FileDriverTest
     {
         $this->driver->put('foo', 'bar', 0);
 
-        $output = file_get_contents($this->dir.'/'.sha1('foo').'/item.dat');
+        $output = file_get_contents($this->dir . '/' . sha1('foo') . '/item.dat');
 
-        $this->assertNotContains('foo', $output, 'The data was not encrypted and appeared in item.dat');
+        $this->assertStringNotContainsString('foo', $output, 'The data was not encrypted and appeared in item.dat');
     }
 }

@@ -14,12 +14,12 @@ interface IDriver
      * Put a value in the cache.
      *
      * @param string $key
-     * @param mixed  $value
-     * @param int    $time
+     * @param mixed $value
+     * @param int $time
      *
      * @return bool
      */
-    public function put($key, $value, $time);
+    public function put(string $key, $value, int $time): bool;
 
     /**
      * Check if a value is stored in the cache.
@@ -28,16 +28,16 @@ interface IDriver
      *
      * @return bool
      */
-    public function has($key);
+    public function has(string $key): bool;
 
     /**
      * Get a value from the cache.
      *
      * @param string $key
      *
-     * @return string
+     * @return ?string
      */
-    public function get($key);
+    public function get(string $key): ?string;
 
     /**
      * Remove a value from the cache.
@@ -46,7 +46,7 @@ interface IDriver
      *
      * @return bool
      */
-    public function remove($key);
+    public function remove(string $key): bool;
 
     /**
      * Clear the cache.

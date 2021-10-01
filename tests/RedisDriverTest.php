@@ -6,6 +6,8 @@
 namespace J0sh0nat0r\SimpleCache\Tests;
 
 use J0sh0nat0r\SimpleCache\Drivers\Redis as RedisDriver;
+use J0sh0nat0r\SimpleCache\Exceptions\DriverInitializationFailedException;
+use J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException;
 
 /**
  * Tests the Redis driver.
@@ -16,79 +18,65 @@ use J0sh0nat0r\SimpleCache\Drivers\Redis as RedisDriver;
  */
 class RedisDriverTest extends DriverTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->driver = new RedisDriver([
             'host' => 'localhost',
         ]);
     }
 
-    /**
-     * @expectedException \J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException
-     */
     public function testHostOptionIsRequired()
     {
+        $this->expectException(DriverOptionsInvalidException::class);
         new RedisDriver([]);
     }
 
-    /**
-     * @expectedException \J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException
-     */
     public function testHostOptionMustBeString()
     {
+        $this->expectException(DriverOptionsInvalidException::class);
         new RedisDriver([
             'host' => 011001100110111101101111
         ]);
     }
 
-    /**
-     * @expectedException \J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException
-     */
     public function testPortOptionMustBeNumeric()
     {
+        $this->expectException(DriverOptionsInvalidException::class);
         new RedisDriver([
             'host' => 'localhost',
             'port' => 'foo'
         ]);
     }
 
-    /**
-     * @expectedException \J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException
-     */
     public function testPasswordOptionMustBeString()
     {
+        $this->expectException(DriverOptionsInvalidException::class);
         new RedisDriver([
             'host' => 'localhost',
             'password' => ['foo', 'bar']
         ]);
     }
 
-    /**
-     * @expectedException \J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException
-     */
     public function testDatabaseOptionMustBeNumeric()
     {
+        $this->expectException(DriverOptionsInvalidException::class);
         new RedisDriver([
             'host' => 'localhost',
             'database' => 'foo'
         ]);
     }
 
-    /**
-     * @expectedException \J0sh0nat0r\SimpleCache\Exceptions\DriverInitializationFailedException
-     */
     public function testConnectionErrorException()
     {
+        $this->expectException(DriverInitializationFailedException::class);
         new RedisDriver([
             'host' => 'foo.bar.baz.qux'
         ]);
     }
 
-    /**
-     * @expectedException \J0sh0nat0r\SimpleCache\Exceptions\DriverInitializationFailedException
-     */
     public function testDatabaseSelectionErrorException()
     {
+        $this->expectException(DriverInitializationFailedException::class);
         new RedisDriver([
             'host' => 'localhost',
             'database' => PHP_INT_MAX
