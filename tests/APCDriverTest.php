@@ -16,7 +16,7 @@ use J0sh0nat0r\SimpleCache\Drivers\APC as APCDriver;
  */
 class APCDriverTest extends DriverTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->driver = new APCDriver();
     }
@@ -24,5 +24,6 @@ class APCDriverTest extends DriverTestCase
     public function testItemExpiration()
     {
         // Can't test item expiration as APC requires a new request in order to expunge an item
+        $this->assertTrue(true);
     }
 }

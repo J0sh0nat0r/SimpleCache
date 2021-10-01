@@ -5,6 +5,7 @@
 
 namespace J0sh0nat0r\SimpleCache\Drivers;
 
+use Exception;
 use J0sh0nat0r\SimpleCache\Exceptions\DriverInitializationFailedException;
 use J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException;
 use J0sh0nat0r\SimpleCache\IDriver;
@@ -24,7 +25,7 @@ class Redis implements IDriver
      *
      * @var \Redis
      */
-    private $redis;
+    private \Redis $redis;
 
     /**
      * Redis constructor.
@@ -44,7 +45,7 @@ class Redis implements IDriver
             throw new DriverOptionsInvalidException('The host option must be a string');
         }
 
-        $options['port'] = isset($options['port']) ? $options['port'] : 6379;
+        $options['port'] = $options['port'] ?? 6379;
 
         if (!is_numeric($options['port'])) {
             throw new DriverOptionsInvalidException('The port option must be numeric');
@@ -53,15 +54,15 @@ class Redis implements IDriver
         $this->redis = new \Redis();
 
         try {
-            $connected = $this->redis->connect($options['host'], intval($options['port']));
-        } catch (\Exception $e) {
+            $connected = $this->redis->connect($options['host'], (int)$options['port']);
+        } catch (Exception $e) {
             throw new DriverInitializationFailedException(
-                'Failed to connect to Redis at '.$options['host'].':'.$options['port']
+                'Failed to connect to Redis at ' . $options['host'] . ':' . $options['port']
             );
         }
 
         if (!$connected) {
-            throw new DriverInitializationFailedException('Failed to connect to Redis: '.$this->redis->getLastError());
+            throw new DriverInitializationFailedException('Failed to connect to Redis: ' . $this->redis->getLastError());
         }
 
         if (isset($options['password'])) {
@@ -73,7 +74,7 @@ class Redis implements IDriver
 
             if (!$authenticated) {
                 throw new DriverInitializationFailedException(
-                    'Failed to authenticate with Redis: '.$this->redis->getLastError()
+                    'Failed to authenticate with Redis: ' . $this->redis->getLastError()
                 );
             }
         }
@@ -87,7 +88,7 @@ class Redis implements IDriver
 
             if (!$success) {
                 throw new DriverInitializationFailedException(
-                    'Failed to select Redis database: '.$this->redis->getLastError()
+                    'Failed to select Redis database: ' . $this->redis->getLastError()
                 );
             }
         }
@@ -96,7 +97,7 @@ class Redis implements IDriver
     /**
      * {@inheritdoc}
      */
-    public function put($key, $value, $time)
+    public function put(string $key, $value, $time): bool
     {
         if ($time === 0) {
             return $this->redis->set($key, $value);
@@ -108,16 +109,16 @@ class Redis implements IDriver
     /**
      * {@inheritdoc}
      */
-    public function has($key)
+    public function has(string $key): bool
     {
         // Returns an int on PHP 7.2
-        return (bool) $this->redis->exists($key);
+        return (bool)$this->redis->exists($key);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function get($key)
+    public function get(string $key): ?string
     {
         $value = $this->redis->get($key);
 
@@ -131,7 +132,7 @@ class Redis implements IDriver
     /**
      * {@inheritdoc}
      */
-    public function remove($key)
+    public function remove(string $key): bool
     {
         return $this->redis->del($key) === 1;
     }

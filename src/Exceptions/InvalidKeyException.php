@@ -5,9 +5,11 @@
 
 namespace J0sh0nat0r\SimpleCache\Exceptions;
 
+use Exception;
+
 /**
  * Exception thrown when an invalid key is provided.
  */
-class InvalidKeyException extends \Exception
+class InvalidKeyException extends Exception
 {
 }

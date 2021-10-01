@@ -16,7 +16,7 @@ use J0sh0nat0r\SimpleCache\Drivers\Memcached as MemcachedDriver;
  */
 class MemcachedDriverTest extends DriverTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->driver = new MemcachedDriver([
             'host' => 'localhost'

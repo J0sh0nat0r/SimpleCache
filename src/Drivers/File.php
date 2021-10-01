@@ -5,9 +5,13 @@
 
 namespace J0sh0nat0r\SimpleCache\Drivers;
 
+use Closure;
+use Exception;
 use J0sh0nat0r\SimpleCache\Exceptions\DriverInitializationFailedException;
 use J0sh0nat0r\SimpleCache\Exceptions\DriverOptionsInvalidException;
 use J0sh0nat0r\SimpleCache\IDriver;
+use JsonException;
+use RuntimeException;
 
 /**
  * File driver.
@@ -23,7 +27,7 @@ class File implements IDriver
      *
      * @var string
      */
-    private $dir;
+    private string $dir;
 
     /**
      * Key to use when encrypting item data.
@@ -38,7 +42,7 @@ class File implements IDriver
      *
      * @var bool
      */
-    private $encrypt_data = false;
+    private bool $encrypt_data = false;
 
     /**
      * File driver constructor.
@@ -59,12 +63,10 @@ class File implements IDriver
         }
 
         $this->dir = rtrim($options['dir'], '/');
-        if (!is_dir($this->dir)) {
-            if (!mkdir($this->dir)) {
-                throw new DriverInitializationFailedException(
-                    'Cache directory does not exist and automatic creation failed'
-                );
-            }
+        if (!is_dir($this->dir) && !mkdir($concurrentDirectory = $this->dir) && !is_dir($concurrentDirectory)) {
+            throw new DriverInitializationFailedException(
+                'Cache directory does not exist and automatic creation failed'
+            );
         }
 
         if (isset($options['encryption_key'])) {
@@ -80,14 +82,19 @@ class File implements IDriver
             if (!$this->isValid($item)) {
                 if (!$this->delDir($item)) {
                     throw new DriverInitializationFailedException(
-                        'Failed to remove invalid item! Please manually delete: '.$item
+                        'Failed to remove invalid item! Please manually delete: ' . $item
                     );
                 }
 
                 return;
             }
 
-            $data = json_decode(file_get_contents($item.'/data.json'), true);
+            $data = json_decode(
+                file_get_contents($item . '/data.json'),
+                true,
+                512,
+                JSON_THROW_ON_ERROR
+            );
 
             if ($this->expired($data['key'])) {
                 $this->remove($data['key']);
@@ -97,8 +104,9 @@ class File implements IDriver
 
     /**
      * {@inheritdoc}
+     * @throws Exception
      */
-    public function put($key, $value, $time)
+    public function put(string $key, $value, $time): bool
     {
         $encrypted = $this->encrypt_data;
         $expiry = $time > 0 ? time() + $time : null;
@@ -109,7 +117,7 @@ class File implements IDriver
             $value = $this->encrypt($value, $iv);
 
             if ($value === false) {
-                throw new \Exception('Failed to encrypt item: '.openssl_error_string());
+                throw new Exception('Failed to encrypt item: ' . openssl_error_string());
             }
 
             $item_data['iv'] = $iv;
@@ -117,25 +125,27 @@ class File implements IDriver
 
         if ($this->has($key)) {
             if (!$this->remove($key)) {
-                throw new \Exception('Failed to remove pre-existing version of an item with the key: '.$key);
+                throw new Exception('Failed to remove pre-existing version of an item with the key: ' . $key);
             }
         }
 
         $dir = $this->getDir($key);
         if (!is_dir($dir)) {
-            mkdir($dir);
+            if (!mkdir($dir) && !is_dir($dir)) {
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $dir));
+            }
         }
 
-        $success = file_put_contents($dir.'/data.json', json_encode($item_data));
-        $success = file_put_contents($dir.'/item.dat', $value) ? $success : false;
+        $success = file_put_contents($dir . '/data.json', json_encode($item_data, JSON_THROW_ON_ERROR));
+        $success = file_put_contents($dir . '/item.dat', $value) ? $success : false;
 
-        return boolval($success);
+        return (bool)$success;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function has($key)
+    public function has(string $key): bool
     {
         $dir = $this->getDir($key);
 
@@ -152,8 +162,9 @@ class File implements IDriver
 
     /**
      * {@inheritdoc}
+     * @throws Exception
      */
-    public function get($key)
+    public function get(string $key): ?string
     {
         if (!$this->has($key)) {
             return null;
@@ -161,7 +172,7 @@ class File implements IDriver
 
         $data = $this->getData($key);
 
-        $value = file_get_contents($this->getDir($key).'/item.dat');
+        $value = file_get_contents($this->getDir($key) . '/item.dat');
 
         if ($value === false) {
             return null;
@@ -169,13 +180,13 @@ class File implements IDriver
 
         if ($data['encrypted']) {
             if (!$this->encrypt_data) {
-                throw new \Exception('Item is encrypted but no encryption key was provided');
+                throw new Exception('Item is encrypted but no encryption key was provided');
             }
 
             $value = $this->decrypt($value, $data['iv']);
 
             if ($value === false) {
-                throw new \Exception('Failed to decrypt item: '.openssl_error_string());
+                throw new Exception('Failed to decrypt item: ' . openssl_error_string());
             }
         }
 
@@ -185,7 +196,7 @@ class File implements IDriver
     /**
      * {@inheritdoc}
      */
-    public function remove($key)
+    public function remove(string $key): bool
     {
         $dir = $this->getDir($key);
 
@@ -219,9 +230,9 @@ class File implements IDriver
      *
      * @return string Directory for the given key
      */
-    private function getDir($key)
+    private function getDir(string $key): string
     {
-        return $this->dir.'/'.sha1($key);
+        return $this->dir . '/' . sha1($key);
     }
 
     /**
@@ -231,13 +242,13 @@ class File implements IDriver
      *
      * @return bool TRUE on success, FALSE on failure
      */
-    private function delDir($directory)
+    private function delDir(string $directory): bool
     {
         $success = true;
         $contents = array_slice(scandir($directory), 2);
 
-        foreach ($contents as $key => $value) {
-            $path = $directory.DIRECTORY_SEPARATOR.$value;
+        foreach ($contents as $value) {
+            $path = $directory . DIRECTORY_SEPARATOR . $value;
 
             if (is_file($path)) {
                 $success = unlink($path) ? $success : false;
@@ -246,9 +257,7 @@ class File implements IDriver
             }
         }
 
-        $success = rmdir($directory) ? $success : false;
-
-        return $success;
+        return rmdir($directory) ? $success : false;
     }
 
     /**
@@ -258,14 +267,14 @@ class File implements IDriver
      *
      * @return bool
      */
-    private function isValid($dir)
+    private function isValid(string $dir): bool
     {
         if (!is_dir($dir)) {
             return false;
         }
 
-        $valid = file_exists($dir.'/data.json');
-        $valid = file_exists($dir.'/item.dat') ? $valid : false;
+        $valid = file_exists($dir . '/data.json');
+        $valid = file_exists($dir . '/item.dat') ? $valid : false;
 
         return $valid;
     }
@@ -277,7 +286,7 @@ class File implements IDriver
      *
      * @return array|null
      */
-    private function getData($key)
+    private function getData(string $key): ?array
     {
         $dir = $this->getDir($key);
 
@@ -285,17 +294,17 @@ class File implements IDriver
             return null;
         }
 
-        return json_decode(file_get_contents($dir.'/data.json'), true);
+        return json_decode(file_get_contents($dir . '/data.json'), true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
      * Calls callback on each item in the cache.
      *
-     * @param \Closure $callback Callback
+     * @param Closure $callback Callback
      */
-    private function forAll($callback)
+    private function forAll(Closure $callback): void
     {
-        foreach (glob($this->dir.'/*', GLOB_ONLYDIR) as $item) {
+        foreach (glob($this->dir . '/*', GLOB_ONLYDIR) as $item) {
             if ($this->isValid($item)) {
                 $callback($item);
             }
@@ -308,29 +317,24 @@ class File implements IDriver
      * @param string $key Key of the item to check
      *
      * @return bool True if the item is expired, otherwise, false
+     * @throws JsonException
      */
-    private function expired($key)
+    private function expired(string $key): bool
     {
         $data = $this->getData($key);
 
-        if (!is_null($data['expiry'])) {
-            if ($data['expiry'] <= time()) {
-                return true;
-            }
-        }
-
-        return false;
+        return !is_null($data['expiry']) && $data['expiry'] <= time();
     }
 
     /**
      * Encrypts a string with the encryption key and provided initialisation vector.
      *
      * @param string $data String to encrypt
-     * @param string $iv   Encryption initialization vector (out)
+     * @param ?string &$iv Encryption initialization vector (out)
      *
      * @return string
      */
-    private function encrypt($data, &$iv)
+    private function encrypt(string $data, ?string &$iv): string
     {
         $iv = bin2hex(openssl_random_pseudo_bytes(8));
 
@@ -341,11 +345,11 @@ class File implements IDriver
      * Decrypts a string with the encryption key and provided initialisation vector.
      *
      * @param string $data String to decrypt
-     * @param string $iv   The initialisation vector used to encrypt the item
+     * @param string $iv The initialisation vector used to encrypt the item
      *
      * @return string
      */
-    private function decrypt($data, $iv)
+    private function decrypt(string $data, string $iv): string
     {
         return openssl_decrypt($data, 'aes-256-cbc', $this->encryption_key, 0, $iv);
     }

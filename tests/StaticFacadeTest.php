@@ -5,6 +5,7 @@
 
 namespace J0sh0nat0r\SimpleCache\Tests;
 
+use Exception;
 use J0sh0nat0r\SimpleCache\Cache as SimpleCache;
 use J0sh0nat0r\SimpleCache\Drivers\ArrayDriver;
 use J0sh0nat0r\SimpleCache\StaticFacade as Cache;
@@ -17,18 +18,16 @@ class StaticFacadeTest extends TestCase
      */
     private $cache;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->cache = new SimpleCache(ArrayDriver::class);
 
         $this->cache->remember_values = false;
     }
 
-    /**
-     * @expectedException \Exception
-     */
     public function testNotBoundException()
     {
+        $this->expectException(Exception::class);
         Cache::get('foo');
     }
 
@@ -45,12 +44,10 @@ class StaticFacadeTest extends TestCase
         $this->assertEquals(false, Cache::get('baz', false));
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage Invalid method: foo
-     */
     public function testInvalidMethodException()
     {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("Invalid method: foo");
         Cache::bind($this->cache);
 
         Cache::foo();

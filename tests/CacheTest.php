@@ -5,22 +5,25 @@
 
 namespace J0sh0nat0r\SimpleCache\Tests;
 
+use InvalidArgumentException;
 use J0sh0nat0r\SimpleCache\Cache;
 use J0sh0nat0r\SimpleCache\Drivers\ArrayDriver;
+use J0sh0nat0r\SimpleCache\Exceptions\InvalidKeyException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the main Cache class.
  *
  * @covers \J0sh0nat0r\SimpleCache\Cache
  */
-class CacheTest extends \PHPUnit_Framework_TestCase
+class CacheTest extends TestCase
 {
     /**
      * @var Cache
      */
     private $cache;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->cache = new Cache(ArrayDriver::class);
 
@@ -284,19 +287,15 @@ class CacheTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @expectedException \J0sh0nat0r\SimpleCache\Exceptions\InvalidKeyException
-     */
     public function testInvalidKeyExceptionIsThrown()
     {
+        $this->expectException(InvalidKeyException::class);
         $this->cache->store(null, 'foo');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testInvalidArgumentExceptionIsThrownForDriverOptions()
     {
-        new Cache(null, '');
+        $this->expectException(InvalidArgumentException::class);
+        new Cache('invalidDriver');
     }
 }

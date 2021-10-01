@@ -19,8 +19,8 @@ use SQLite3;
  */
 class SQLite implements IDriver
 {
-    private $db;
-    private $table_name = 'cache';
+    private SQLite3 $db;
+    private string $table_name = 'cache';
 
     /**
      * SQLite driver constructor.
@@ -36,12 +36,10 @@ class SQLite implements IDriver
             throw new DriverOptionsInvalidException('The `file` option must be set');
         }
 
-        if (!is_file($options['file'])) {
-            if (!touch($options['file'])) {
-                throw new DriverInitializationFailedException(
-                    'The database file was not found and could not be automatically created'
-                );
-            }
+        if (!is_file($options['file']) && !touch($options['file'])) {
+            throw new DriverInitializationFailedException(
+                'The database file was not found and could not be automatically created'
+            );
         }
 
         if (isset($options['table_name'])) {
@@ -78,7 +76,7 @@ class SQLite implements IDriver
     /**
      * {@inheritdoc}
      */
-    public function put($key, $value, $time)
+    public function put(string $key, $value, $time): bool
     {
         if ($this->has($key)) {
             $this->remove($key);
@@ -92,13 +90,13 @@ class SQLite implements IDriver
         $stmt->bindParam(2, $value, SQLITE3_TEXT);
         $stmt->bindParam(3, $time, SQLITE3_INTEGER);
 
-        return (bool) $stmt->execute();
+        return (bool)$stmt->execute();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function remove($key)
+    public function remove(string $key): bool
     {
         if (!$this->has($key)) {
             return true;
@@ -108,13 +106,13 @@ class SQLite implements IDriver
 
         $stmt->bindParam(1, $key, SQLITE3_TEXT);
 
-        return (bool) $stmt->execute();
+        return (bool)$stmt->execute();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function has($key)
+    public function has(string $key): bool
     {
         return $this->get($key) !== null;
     }
@@ -122,7 +120,7 @@ class SQLite implements IDriver
     /**
      * {@inheritdoc}
      */
-    public function get($key)
+    public function get(string $key): ?string
     {
         $stmt = $this->db->prepare("SELECT * FROM \"$this->table_name\" WHERE k = ?");
 
@@ -147,7 +145,7 @@ class SQLite implements IDriver
      */
     public function clear()
     {
-        return (bool) $this->db->query("DELETE FROM \"$this->table_name\"");
+        return (bool)$this->db->query("DELETE FROM \"$this->table_name\"");
     }
 
     /**
@@ -155,9 +153,9 @@ class SQLite implements IDriver
      *
      * @return bool
      */
-    private function clearExpiredItems()
+    private function clearExpiredItems(): bool
     {
-        return (bool) $this->db->query(
+        return (bool)$this->db->query(
             "DELETE FROM \"$this->table_name\" WHERE e <= strftime('%s','now') AND e > 0"
         );
     }

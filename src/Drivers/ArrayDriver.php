@@ -19,15 +19,15 @@ class ArrayDriver implements IDriver
      *
      * @var array[]
      */
-    private $items;
+    private array $items;
 
     /**
      * {@inheritdoc}
      */
-    public function put($key, $value, $time)
+    public function put(string $key, $value, $time): bool
     {
         $this->items[$key] = [
-            'value'  => $value,
+            'value' => $value,
             'expiry' => $time > 0 ? time() + $time : null,
         ];
 
@@ -37,7 +37,7 @@ class ArrayDriver implements IDriver
     /**
      * {@inheritdoc}
      */
-    public function has($key)
+    public function has(string $key): bool
     {
         if (!isset($this->items[$key])) {
             return false;
@@ -45,12 +45,10 @@ class ArrayDriver implements IDriver
 
         $item = $this->items[$key];
 
-        if (!is_null($item['expiry'])) {
-            if ($item['expiry'] <= time()) {
-                $this->remove($key);
+        if (!is_null($item['expiry']) && $item['expiry'] <= time()) {
+            $this->remove($key);
 
-                return false;
-            }
+            return false;
         }
 
         return true;
@@ -59,7 +57,7 @@ class ArrayDriver implements IDriver
     /**
      * {@inheritdoc}
      */
-    public function get($key)
+    public function get(string $key): ?string
     {
         if ($this->has($key)) {
             return $this->items[$key]['value'];
@@ -71,7 +69,7 @@ class ArrayDriver implements IDriver
     /**
      * {@inheritdoc}
      */
-    public function remove($key)
+    public function remove(string $key): bool
     {
         unset($this->items[$key]);
 
