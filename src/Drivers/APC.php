@@ -43,7 +43,7 @@ class APC implements IDriver
      */
     public function put(string $key, $value, $time): bool
     {
-        $function = $this->prefix . 'store';
+        $function = $this->prefix.'store';
 
         return $function($key, $value, $time);
     }
@@ -53,7 +53,7 @@ class APC implements IDriver
      */
     public function has(string $key): bool
     {
-        $function = $this->prefix . 'exists';
+        $function = $this->prefix.'exists';
 
         return $function($key);
     }
@@ -63,7 +63,7 @@ class APC implements IDriver
      */
     public function get(string $key): ?string
     {
-        $function = $this->prefix . 'fetch';
+        $function = $this->prefix.'fetch';
 
         $success = false;
         $result = $function($key, $success);
@@ -80,7 +80,7 @@ class APC implements IDriver
      */
     public function remove(string $key): bool
     {
-        $function = $this->prefix . 'delete';
+        $function = $this->prefix.'delete';
 
         return $function($key);
     }

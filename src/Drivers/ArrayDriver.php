@@ -27,7 +27,7 @@ class ArrayDriver implements IDriver
     public function put(string $key, $value, $time): bool
     {
         $this->items[$key] = [
-            'value' => $value,
+            'value'  => $value,
             'expiry' => $time > 0 ? time() + $time : null,
         ];
 

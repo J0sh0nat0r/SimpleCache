@@ -31,9 +31,9 @@ class PCI
     /**
      * @param $name
      *
-     * @return bool
      * @throws InvalidKeyException
      *
+     * @return bool
      */
     public function __isset($name)
     {
@@ -43,9 +43,9 @@ class PCI
     /**
      * @param $name
      *
-     * @return mixed
      * @throws InvalidKeyException
      *
+     * @return mixed
      */
     public function __get($name)
     {

@@ -54,15 +54,15 @@ class Redis implements IDriver
         $this->redis = new \Redis();
 
         try {
-            $connected = $this->redis->connect($options['host'], (int)$options['port']);
+            $connected = $this->redis->connect($options['host'], (int) $options['port']);
         } catch (Exception $e) {
             throw new DriverInitializationFailedException(
-                'Failed to connect to Redis at ' . $options['host'] . ':' . $options['port']
+                'Failed to connect to Redis at '.$options['host'].':'.$options['port']
             );
         }
 
         if (!$connected) {
-            throw new DriverInitializationFailedException('Failed to connect to Redis: ' . $this->redis->getLastError());
+            throw new DriverInitializationFailedException('Failed to connect to Redis: '.$this->redis->getLastError());
         }
 
         if (isset($options['password'])) {
@@ -74,7 +74,7 @@ class Redis implements IDriver
 
             if (!$authenticated) {
                 throw new DriverInitializationFailedException(
-                    'Failed to authenticate with Redis: ' . $this->redis->getLastError()
+                    'Failed to authenticate with Redis: '.$this->redis->getLastError()
                 );
             }
         }
@@ -88,7 +88,7 @@ class Redis implements IDriver
 
             if (!$success) {
                 throw new DriverInitializationFailedException(
-                    'Failed to select Redis database: ' . $this->redis->getLastError()
+                    'Failed to select Redis database: '.$this->redis->getLastError()
                 );
             }
         }
@@ -112,7 +112,7 @@ class Redis implements IDriver
     public function has(string $key): bool
     {
         // Returns an int on PHP 7.2
-        return (bool)$this->redis->exists($key);
+        return (bool) $this->redis->exists($key);
     }
 
     /**
