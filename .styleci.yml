@@ -2,9 +2,6 @@ preset: recommended
 
 risky: true
 
-disabled:
-  - simplified_null_return
-
 finder:
   path:
     - "src"
