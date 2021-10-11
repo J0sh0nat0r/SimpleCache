@@ -55,7 +55,7 @@ class Cache
     /**
      * Cache constructor.
      *
-     * @param string $driver The driver to use
+     * @param string     $driver         The driver to use
      * @param array|null $driver_options Options to pass to the driver
      *
      * @throws InvalidArgumentException
@@ -84,14 +84,14 @@ class Cache
     /**
      * Store a value (or an array of key-value pairs) in the cache.
      *
-     * @param string|array $key The key to store the item under(can also be a `key => value` array)
-     * @param mixed $value Value of the item (can also be the time in the case that $key is an array)
-     * @param int|null $time Time to store the item for (can also be null in the case that $key is an array)
+     * @param string|array $key   The key to store the item under(can also be a `key => value` array)
+     * @param mixed        $value Value of the item (can also be the time in the case that $key is an array)
+     * @param int|null     $time  Time to store the item for (can also be null in the case that $key is an array)
+     *
+     * @throws InvalidKeyException
+     * @throws InvalidArgumentException
      *
      * @return bool|bool[]
-     * @throws InvalidKeyException
-     *
-     * @throws InvalidArgumentException
      */
     public function store($key, $value = null, int $time = null)
     {
@@ -119,7 +119,7 @@ class Cache
             throw new InvalidArgumentException('Time must be numeric');
         }
 
-        $success = $this->driver->put($key, serialize($value), (int)$time);
+        $success = $this->driver->put($key, serialize($value), (int) $time);
 
         if ($success && $this->remember_values) {
             $this->loaded[$key] = $value;
@@ -131,13 +131,13 @@ class Cache
     /**
      * Store a item (or an array of items) in the cache indefinitely.
      *
-     * @param string|array $key The key to store the item under (can also be a `key => value` array)
-     * @param mixed $value Value of the item (leave null if $key is a `key => value` array)
+     * @param string|array $key   The key to store the item under (can also be a `key => value` array)
+     * @param mixed        $value Value of the item (leave null if $key is a `key => value` array)
+     *
+     * @throws InvalidArgumentException
+     * @throws InvalidKeyException
      *
      * @return bool|bool[]
-     * @throws InvalidArgumentException
-     *
-     * @throws InvalidKeyException
      */
     public function forever($key, $value = null)
     {
@@ -152,13 +152,14 @@ class Cache
      * Try to find a value in the cache and return it,
      * if we can't it will be calculated with the provided closure.
      *
-     * @param string $key Key of the item to remember
-     * @param int $time Time to remember the item for
+     * @param string  $key      Key of the item to remember
+     * @param int     $time     Time to remember the item for
      * @param Closure $generate Function used to generate the value
-     * @param mixed $default Default value in case an item isn't found and $generate returns null (can be a callback)
+     * @param mixed   $default  Default value in case an item isn't found and $generate returns null (can be a callback)
+     *
+     * @throws InvalidKeyException
      *
      * @return mixed
-     * @throws InvalidKeyException
      */
     public function remember(string $key, int $time, Closure $generate, $default = null)
     {
@@ -188,8 +189,9 @@ class Cache
      *
      * @param string|string[] $key The key (or keys) to search for
      *
-     * @return bool|bool[]
      * @throws InvalidKeyException
+     *
+     * @return bool|bool[]
      */
     public function has($key)
     {
@@ -216,11 +218,12 @@ class Cache
     /**
      * Fetch a value (or an multiple values) from the cache.
      *
-     * @param string|string[] $key The key (or keys) to retrieve the values of
-     * @param mixed $default Default value in case an item isn't found (can be a callback)
+     * @param string|string[] $key     The key (or keys) to retrieve the values of
+     * @param mixed           $default Default value in case an item isn't found (can be a callback)
+     *
+     * @throws InvalidKeyException
      *
      * @return mixed
-     * @throws InvalidKeyException
      */
     public function get($key, $default = null)
     {
@@ -263,11 +266,12 @@ class Cache
     /**
      * Fetch an item (or multiple items) from the cache, then remove it.
      *
-     * @param string|string[] $key Key of the item to pull (can also be an array of keys)
-     * @param mixed $default Default value in case an item isn't found (can be a callback)
+     * @param string|string[] $key     Key of the item to pull (can also be an array of keys)
+     * @param mixed           $default Default value in case an item isn't found (can be a callback)
+     *
+     * @throws InvalidKeyException
      *
      * @return mixed
-     * @throws InvalidKeyException
      */
     public function pull($key, $default = null)
     {
@@ -285,8 +289,9 @@ class Cache
      *
      * @param string|string[] $key Key of the item to remove (can also be an array of keys)
      *
-     * @return bool|bool[]
      * @throws InvalidKeyException
+     *
+     * @return bool|bool[]
      */
     public function remove($key)
     {
@@ -327,8 +332,9 @@ class Cache
      *
      * @param mixed $key Key to validate
      *
-     * @return void
      * @throws InvalidKeyException
+     *
+     * @return void
      */
     private function validateKey($key): void
     {

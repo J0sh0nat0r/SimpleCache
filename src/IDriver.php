@@ -14,8 +14,8 @@ interface IDriver
      * Put a value in the cache.
      *
      * @param string $key
-     * @param mixed $value
-     * @param int $time
+     * @param mixed  $value
+     * @param int    $time
      *
      * @return bool
      */

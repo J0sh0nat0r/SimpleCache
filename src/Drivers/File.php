@@ -82,7 +82,7 @@ class File implements IDriver
             if (!$this->isValid($item)) {
                 if (!$this->delDir($item)) {
                     throw new DriverInitializationFailedException(
-                        'Failed to remove invalid item! Please manually delete: ' . $item
+                        'Failed to remove invalid item! Please manually delete: '.$item
                     );
                 }
 
@@ -90,7 +90,7 @@ class File implements IDriver
             }
 
             $data = json_decode(
-                file_get_contents($item . '/data.json'),
+                file_get_contents($item.'/data.json'),
                 true,
                 512,
                 JSON_THROW_ON_ERROR
@@ -104,6 +104,7 @@ class File implements IDriver
 
     /**
      * {@inheritdoc}
+     *
      * @throws Exception
      */
     public function put(string $key, $value, $time): bool
@@ -117,7 +118,7 @@ class File implements IDriver
             $value = $this->encrypt($value, $iv);
 
             if ($value === false) {
-                throw new Exception('Failed to encrypt item: ' . openssl_error_string());
+                throw new Exception('Failed to encrypt item: '.openssl_error_string());
             }
 
             $item_data['iv'] = $iv;
@@ -125,7 +126,7 @@ class File implements IDriver
 
         if ($this->has($key)) {
             if (!$this->remove($key)) {
-                throw new Exception('Failed to remove pre-existing version of an item with the key: ' . $key);
+                throw new Exception('Failed to remove pre-existing version of an item with the key: '.$key);
             }
         }
 
@@ -136,10 +137,10 @@ class File implements IDriver
             }
         }
 
-        $success = file_put_contents($dir . '/data.json', json_encode($item_data, JSON_THROW_ON_ERROR));
-        $success = file_put_contents($dir . '/item.dat', $value) ? $success : false;
+        $success = file_put_contents($dir.'/data.json', json_encode($item_data, JSON_THROW_ON_ERROR));
+        $success = file_put_contents($dir.'/item.dat', $value) ? $success : false;
 
-        return (bool)$success;
+        return (bool) $success;
     }
 
     /**
@@ -162,6 +163,7 @@ class File implements IDriver
 
     /**
      * {@inheritdoc}
+     *
      * @throws Exception
      */
     public function get(string $key): ?string
@@ -172,7 +174,7 @@ class File implements IDriver
 
         $data = $this->getData($key);
 
-        $value = file_get_contents($this->getDir($key) . '/item.dat');
+        $value = file_get_contents($this->getDir($key).'/item.dat');
 
         if ($value === false) {
             return null;
@@ -186,7 +188,7 @@ class File implements IDriver
             $value = $this->decrypt($value, $data['iv']);
 
             if ($value === false) {
-                throw new Exception('Failed to decrypt item: ' . openssl_error_string());
+                throw new Exception('Failed to decrypt item: '.openssl_error_string());
             }
         }
 
@@ -232,7 +234,7 @@ class File implements IDriver
      */
     private function getDir(string $key): string
     {
-        return $this->dir . '/' . sha1($key);
+        return $this->dir.'/'.sha1($key);
     }
 
     /**
@@ -248,7 +250,7 @@ class File implements IDriver
         $contents = array_slice(scandir($directory), 2);
 
         foreach ($contents as $value) {
-            $path = $directory . DIRECTORY_SEPARATOR . $value;
+            $path = $directory.DIRECTORY_SEPARATOR.$value;
 
             if (is_file($path)) {
                 $success = unlink($path) ? $success : false;
@@ -273,8 +275,8 @@ class File implements IDriver
             return false;
         }
 
-        $valid = file_exists($dir . '/data.json');
-        $valid = file_exists($dir . '/item.dat') ? $valid : false;
+        $valid = file_exists($dir.'/data.json');
+        $valid = file_exists($dir.'/item.dat') ? $valid : false;
 
         return $valid;
     }
@@ -294,7 +296,7 @@ class File implements IDriver
             return null;
         }
 
-        return json_decode(file_get_contents($dir . '/data.json'), true, 512, JSON_THROW_ON_ERROR);
+        return json_decode(file_get_contents($dir.'/data.json'), true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -304,7 +306,7 @@ class File implements IDriver
      */
     private function forAll(Closure $callback): void
     {
-        foreach (glob($this->dir . '/*', GLOB_ONLYDIR) as $item) {
+        foreach (glob($this->dir.'/*', GLOB_ONLYDIR) as $item) {
             if ($this->isValid($item)) {
                 $callback($item);
             }
@@ -316,8 +318,9 @@ class File implements IDriver
      *
      * @param string $key Key of the item to check
      *
-     * @return bool True if the item is expired, otherwise, false
      * @throws JsonException
+     *
+     * @return bool True if the item is expired, otherwise, false
      */
     private function expired(string $key): bool
     {
@@ -329,8 +332,8 @@ class File implements IDriver
     /**
      * Encrypts a string with the encryption key and provided initialisation vector.
      *
-     * @param string $data String to encrypt
-     * @param ?string &$iv Encryption initialization vector (out)
+     * @param string  $data String to encrypt
+     * @param ?string &$iv  Encryption initialization vector (out)
      *
      * @return string
      */
@@ -345,7 +348,7 @@ class File implements IDriver
      * Decrypts a string with the encryption key and provided initialisation vector.
      *
      * @param string $data String to decrypt
-     * @param string $iv The initialisation vector used to encrypt the item
+     * @param string $iv   The initialisation vector used to encrypt the item
      *
      * @return string
      */

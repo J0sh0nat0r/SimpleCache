@@ -90,7 +90,7 @@ class SQLite implements IDriver
         $stmt->bindParam(2, $value, SQLITE3_TEXT);
         $stmt->bindParam(3, $time, SQLITE3_INTEGER);
 
-        return (bool)$stmt->execute();
+        return (bool) $stmt->execute();
     }
 
     /**
@@ -106,7 +106,7 @@ class SQLite implements IDriver
 
         $stmt->bindParam(1, $key, SQLITE3_TEXT);
 
-        return (bool)$stmt->execute();
+        return (bool) $stmt->execute();
     }
 
     /**
@@ -145,7 +145,7 @@ class SQLite implements IDriver
      */
     public function clear()
     {
-        return (bool)$this->db->query("DELETE FROM \"$this->table_name\"");
+        return (bool) $this->db->query("DELETE FROM \"$this->table_name\"");
     }
 
     /**
@@ -155,7 +155,7 @@ class SQLite implements IDriver
      */
     private function clearExpiredItems(): bool
     {
-        return (bool)$this->db->query(
+        return (bool) $this->db->query(
             "DELETE FROM \"$this->table_name\" WHERE e <= strftime('%s','now') AND e > 0"
         );
     }

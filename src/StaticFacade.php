@@ -11,14 +11,14 @@ use Exception;
 /**
  * A static wrapper around a SimpleCache instance (e.g for a global cache).
  *
- * @method  static bool|bool[]  store(string | string[] $key, mixed $value, int $time = null)
- * @method  static mixed         remember(string $key, int $time, Closure $generate, mixed $default = null)
- * @method  static bool|bool[]  forever(string | string[] $key, mixed $value = null)
- * @method  static bool|bool[]  has(string | string[] $key)
- * @method  static mixed         get(string | string[] $key, mixed $default = null)
- * @method  static mixed         pull(string | string[] $key, mixed $default = null)
- * @method  static bool|bool[]  remove(string | string[] $key)
- * @method  static bool          clear()
+ * @method static bool|bool[]  store(string | string[] $key, mixed $value, int $time = null)
+ * @method static mixed         remember(string $key, int $time, Closure $generate, mixed $default = null)
+ * @method static bool|bool[]  forever(string | string[] $key, mixed $value = null)
+ * @method static bool|bool[]  has(string | string[] $key)
+ * @method static mixed         get(string | string[] $key, mixed $default = null)
+ * @method static mixed         pull(string | string[] $key, mixed $default = null)
+ * @method static bool|bool[]  remove(string | string[] $key)
+ * @method static bool          clear()
  */
 class StaticFacade
 {
@@ -32,12 +32,12 @@ class StaticFacade
     /**
      * Handle static calls and proxy them to $cache.
      *
-     * @param string $name Name of the function being called
+     * @param string     $name      Name of the function being called
      * @param array|null $arguments Arguments passed ot the function being called
      *
-     * @return mixed
      * @throws Exception
      *
+     * @return mixed
      */
     public static function __callStatic(string $name, ?array $arguments)
     {
@@ -64,9 +64,9 @@ class StaticFacade
      * Checks if the StaticFacade has been bound to a SimpleCache instance,
      * and, if not, an exception will be thrown.
      *
-     * @return void
      * @throws Exception
      *
+     * @return void
      */
     private static function _checkBound(): void
     {

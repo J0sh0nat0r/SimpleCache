@@ -72,7 +72,7 @@ class Memcached implements IDriver
 
             if (!$success) {
                 throw new DriverInitializationFailedException(
-                    'Failed to add a Memcached server: ' . $this->pool->getResultMessage()
+                    'Failed to add a Memcached server: '.$this->pool->getResultMessage()
                 );
             }
         }
