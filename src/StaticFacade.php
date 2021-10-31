@@ -12,13 +12,13 @@ use Exception;
  * A static wrapper around a SimpleCache instance (e.g for a global cache).
  *
  * @method static bool|bool[]  store(string | string[] $key, mixed $value, int $time = null)
- * @method static mixed         remember(string $key, int $time, Closure $generate, mixed $default = null)
+ * @method static mixed        remember(string $key, int $time, Closure $generate, mixed $default = null)
  * @method static bool|bool[]  forever(string | string[] $key, mixed $value = null)
  * @method static bool|bool[]  has(string | string[] $key)
- * @method static mixed         get(string | string[] $key, mixed $default = null)
- * @method static mixed         pull(string | string[] $key, mixed $default = null)
+ * @method static mixed        get(string | string[] $key, mixed $default = null)
+ * @method static mixed        pull(string | string[] $key, mixed $default = null)
  * @method static bool|bool[]  remove(string | string[] $key)
- * @method static bool          clear()
+ * @method static bool         clear()
  */
 class StaticFacade
 {
@@ -27,13 +27,13 @@ class StaticFacade
      *
      * @var Cache
      */
-    private static $cache;
+    private static Cache $cache;
 
     /**
      * Handle static calls and proxy them to $cache.
      *
      * @param string     $name      Name of the function being called
-     * @param array|null $arguments Arguments passed ot the function being called
+     * @param array|null $arguments Arguments passed yo the function being called
      *
      * @throws Exception
      *
@@ -43,11 +43,9 @@ class StaticFacade
     {
         self::_checkBound();
 
-        if (method_exists(self::$cache, $name)) {
-            return call_user_func_array([self::$cache, $name], $arguments);
-        }
+        $arguments ??= [];
 
-        throw new Exception("Invalid method: $name");
+        return self::$cache->{$name}(...$arguments);
     }
 
     /**

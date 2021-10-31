@@ -16,7 +16,7 @@ class StaticFacadeTest extends TestCase
     /**
      * @var SimpleCache
      */
-    private $cache;
+    private SimpleCache $cache;
 
     public function setUp(): void
     {
@@ -46,8 +46,9 @@ class StaticFacadeTest extends TestCase
 
     public function testInvalidMethodException()
     {
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage("Invalid method: foo");
+        $this->expectError();
+        $this->expectErrorMessage("Call to undefined method J0sh0nat0r\SimpleCache\Cache::foo()");
+
         Cache::bind($this->cache);
 
         Cache::foo();
