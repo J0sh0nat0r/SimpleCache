@@ -10,7 +10,7 @@ use J0sh0nat0r\SimpleCache\Exceptions\InvalidKeyException;
 
 /**
  * Property-Cache interface.
- * 
+ *
  * @internal
  */
 class PCI implements \ArrayAccess
@@ -101,7 +101,7 @@ class PCI implements \ArrayAccess
 
     /**
      * @throws InvalidKeyException
-     */ 
+     */
     public function offsetUnset($offset)
     {
         $this->cache->remove($offset);
