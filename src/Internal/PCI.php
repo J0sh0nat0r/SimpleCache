@@ -83,12 +83,12 @@ class PCI implements \ArrayAccess
         return $this->cache->get($offset);
     }
 
-    public function offsetSet($offset, $value) 
+    public function offsetSet($offset, $value)
     {
         $this->cache->store($offset, $value);
     }
 
-    public function offsetUnset($offset) 
+    public function offsetUnset($offset)
     {
         $this->cache->remove($offset);
     }
